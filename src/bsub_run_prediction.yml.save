@@ -1,0 +1,49 @@
+# For more options, check out:
+# https://www.ibm.com/support/knowledgecenter/en/SSWRJV_10.1.0/lsf_command_ref/bsub.yaml.1.html
+io: 
+    outputOverwriteFile: stdout_davis_t5_chemBERTa.log
+    errorOverwriteFile: stderr_davis_t5_chemBERTa.log
+limit: 
+    coreLimit: 20
+    # in hh:mm
+    runtimeLimit: 96:00
+    # Limit the execution to 8GB of CPU RAM
+    memLimit: 20G!
+resource: 
+    # GPU options
+    # shared job up to 43GB of GPU RAM
+    # IMPORTANT: limits are not strictly enforced
+    # make sure you allocate as much as you will maximally need!
+    # Failing to do so may result in your or someone elses job failing.
+    gpu: num=1/task:mode=shared:gmem=8G:j_exclusive=no:gpack=yes
+    # If job>43GB, ask for exclusive GPU use
+    # this MUST be limited to 2 exclusive use jobs per user!
+    # gpu: num=1:mode=exclusive_process:gmem=47G:j_exclusive=yes
+
+    # Which machine to use: 
+    #  - lsf-server-2 = CD/big
+    #  - lsf-server-3 = titanx
+    # To use any, uncomment! 
+    machines: lsf-server-3
+
+
+## Uncommment the following to schedule a job to start at a specific time
+## In the following case, the job will be scheduled at 8PM of the day you submit it
+## The format is YYYY:MM:DD:HH:M, https://www.ibm.com/support/knowledgecenter/en/SSWRJV_10.1.0/lsf_command_ref/bsub.b.1.html
+# schedule:
+#    specifiedStartTime: 20:00
+
+
+## Uncomment the following to get job status updates on your @rostlab.org email
+## Note: the default behaviour is that the @rostlab.org email forwards to your TUM email
+#notify:
+#    notifyJobDone: ""
+#    notifyJobExit:
+#    jobWaitDone:
+#    notifyJobDispatch:
+
+
+properties:
+    queueName: rostlab-student-normal-1
+    jobName: dg_prediction_davis_T5_chemBERTacommand: python binding_prediction.py
+
