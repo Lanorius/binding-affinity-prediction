@@ -48,7 +48,8 @@ number_of_random_draws = 20
 #  number_of_random_draws = 2
 batch_sizes = list(range(10, 1024, 5))
 #  batch_sizes = list(range(10, 2048, 5))
-learning_rates = [0.01, 0.001, 0.0001]
+#  learning_rates = [0.01, 0.001, 0.0001]
+learning_rates = list(np.arange(0.0001, 0.01, 0.0001))  # TODO: debatable choice
 
 #  numbers_of_epochs = list(range(1, 3))
 numbers_of_epochs = list(range(100, 300))

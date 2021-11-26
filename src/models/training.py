@@ -1,5 +1,4 @@
-#from src.performance_evaluation.stats_and_output import *
-from performance_evaluation.stats_and_output import *
+from src.performance_evaluation.stats_and_output import *
 import torch
 
 
@@ -46,10 +45,11 @@ class Trainer:
                 if self.nr_classes == 2:
                     loss2 = self.criterion1(class_output.double().to(self.device), class_label)
                 else:
-                    #predictions_second_loss = self._map_regression_list_to_classes(regression_output).double().to(self.device)
+                    #  predictions_second_loss =
+                    #  self._map_regression_list_to_classes(regression_output).double().to(self.device)
                     class_label = self._map_regression_list_to_classes(regression_label).double().to(self.device)
                     loss2 = self.criterion1(regression_output.double().to(self.device), class_label)
-                total_loss = loss1 + loss2
+                #  total_loss = loss1 + loss2
                 total_loss = loss1
                 total_loss.backward()
                 self.optimizer.step()
@@ -69,6 +69,7 @@ class Tester:
     def __init__(self, device, timestamp):
         self.device = device
         self.timestamp = timestamp
+
     def _collect_predictions_and_labels(self, model, protein_compound, labels, name_pairs, all_labels, all_predicted,
                                         all_name_pairs, i):
         outputs = model(protein_compound)[i].double().to(self.device)
@@ -94,7 +95,7 @@ class Tester:
 
                 self._collect_predictions_and_labels(model, protein_compound, regression_labels, pair_names,
                                                      all_regression_labels, all_regression_predicted, all_name_pairs, 0)
-                #self._collect_predictions_and_labels(model, protein_compound, class_labels, all_binary_labels,
+                #  self._collect_predictions_and_labels(model, protein_compound, class_labels, all_binary_labels,
                 #                                     all_binary_predicted, 1)
 
         if bootstrap:
@@ -104,15 +105,15 @@ class Tester:
         if not tuning:
             plot_output(all_regression_predicted, all_regression_labels, data_used, self.timestamp,
                        plot_name='scatter_plot_regression_'+data_used[0]+"_"+self.timestamp+".png")
-            #plot_output(all_binary_predicted, all_binary_labels, data_used, plot_name='scatter_plot_classes.png')
+            #  plot_output(all_binary_predicted, all_binary_labels, data_used, plot_name='scatter_plot_classes.png')
             print_stats(all_regression_predicted, all_regression_labels, data_used, self.timestamp)
-            #print_stats(all_binary_predicted, all_binary_labels, data_used)
+            #  print_stats(all_binary_predicted, all_binary_labels, data_used)
 
         else:
             return only_rm2(all_regression_predicted, all_regression_labels)
                    #only_rm2(all_binary_predicted, all_binary_labels)
 
-        if nr_of_hard_samples >0:
+        if nr_of_hard_samples > 0:
             find_hardest_samples(all_regression_predicted, all_regression_labels, all_name_pairs, nr_of_hard_samples)
 
 
