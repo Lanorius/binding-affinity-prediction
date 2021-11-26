@@ -7,6 +7,8 @@ def parse_config():
     config.read("config.ini")
     files = config["INPUT FILES"]
     general_setting = config["GENERAL"]
+    shuffle_drugs = config["SHUFFLE LABELS"].getboolean('shuffle_drugs')
+    shuffle_targets = config["SHUFFLE LABELS"].getboolean('shuffle_targets')
     prediction_types = config["PREDICTION TYPES"]
     do_regression = prediction_types.getboolean("regression")
     nr_of_classes = prediction_types.getint("nr_classes")
@@ -38,11 +40,9 @@ def parse_config():
     elif general_setting['compounds'] == 'RDKit':
         # for the chemBERTa vector
         use_model = "RDKit"    
-    
 
     else:
         print("Invalid entry in config.ini for compounds in section GENERAL")
         sys.exit()
 
-    return data_used, use_model, files, do_regression, nr_of_classes
-
+    return data_used, use_model, files, do_regression, nr_of_classes, shuffle_drugs, shuffle_targets

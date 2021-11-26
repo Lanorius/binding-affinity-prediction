@@ -25,14 +25,16 @@ import time  # for timestamps to easily distinguish results
 #######################################################################################################################
 # #######################################ini file  Parser for dataset selection########################################
 
-data_used, use_model, files, do_regression, nr_prediction_classes = parse_config()
+data_used, use_model, files, do_regression, nr_prediction_classes, shuffle_drugs, shuffle_targets = parse_config()
 print(parse_config())
 
 data_set = Dataset(files['embeddings'],
                    files['compound_vectors'],
                    files['label_file'],
                    data_used[0],
-                   files['cluster_map'] if files['cluster_map'] != "" else None)
+                   files['cluster_map'] if files['cluster_map'] != "" else None,
+                   shuffle_drugs,
+                   shuffle_targets)
 
 class_borders = np.linspace(data_set.data_ranges[data_set.data_type][0], data_set.data_ranges[data_set.data_type][1],
                             nr_prediction_classes+1)
