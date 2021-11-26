@@ -3,11 +3,12 @@ import torch.optim as optim
 from sklearn.model_selection import train_test_split
 import numpy as np
 
-#from src.data_loading.process_inputs import parse_config
-#from src.data_loading.Dataset import Dataset
-#from src.models.neural_net import PcNet, EmbeddingReducingNN
-#from src.models.training import Trainer, Tester, ModelManager
-#from src.performance_evaluation.standard_error_computation import calculate_standard_error_by_bootstrapping
+#  these work on windows, but not on ubuntu
+#  from src.data_loading.process_inputs import parse_config
+#  from src.data_loading.Dataset import Dataset
+#  from src.models.neural_net import PcNet, EmbeddingReducingNN
+#  from src.models.training import Trainer, Tester, ModelManager
+#  from src.performance_evaluation.standard_error_computation import calculate_standard_error_by_bootstrapping
 
 from data_loading.process_inputs import parse_config
 from data_loading.Dataset import Dataset
@@ -42,12 +43,12 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # ################################################parameters and hyper parameters######################################
 
 number_of_random_draws = 20
-#number_of_random_draws = 2
+#  number_of_random_draws = 2
 batch_sizes = list(range(10, 1024, 5))
-#batch_sizes = list(range(10, 2048, 5))
+#  batch_sizes = list(range(10, 2048, 5))
 learning_rates = [0.01, 0.001, 0.0001]
 
-#numbers_of_epochs = list(range(1, 3))
+#  numbers_of_epochs = list(range(1, 3))
 numbers_of_epochs = list(range(100, 300))
 
 #######################################################################################################################
@@ -55,7 +56,7 @@ numbers_of_epochs = list(range(100, 300))
 
 train_data_split = []
 nr_training_splits = 5
-#nr_training_splits = 2
+#  nr_training_splits = 2
 
 train_rest, test_split = train_test_split(data_set, test_size=1 / (nr_training_splits+1), random_state=42)
 all_training_samples = train_rest
@@ -136,7 +137,8 @@ trainer = Trainer(device, optim.Adam(model.parameters(), lr=best_parameters_over
 tester = Tester(device, timestamp)
 model_manager = ModelManager(model, trainer, tester)
 
-train_loader = torch.utils.data.DataLoader(dataset=all_training_samples, batch_size=best_parameters_overall[0], shuffle=False)
+train_loader = torch.utils.data.DataLoader(dataset=all_training_samples, batch_size=best_parameters_overall[0],
+                                           shuffle=False)
 test_loader = torch.utils.data.DataLoader(dataset=test_split, batch_size=best_parameters_overall[0], shuffle=False)
 
 model_manager.train(train_loader, best_parameters_overall[2], best_parameters_overall[0], tuning=False)
