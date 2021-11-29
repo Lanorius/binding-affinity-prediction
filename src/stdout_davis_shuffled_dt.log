@@ -1,0 +1,59 @@
+Sender: LSF System <lsfadmin@lsf-server-3.rostclust>
+Subject: Job 12727: <dg_prediction_davis_shuffled_dt> in cluster <rost_lsf_cluster_1> Done
+
+Job <dg_prediction_davis_shuffled_dt> was submitted from host <lsf-master-1.rostclust> by user <giessing> in cluster <rost_lsf_cluster_1> at Mon Nov 29 09:16:41 2021
+Job was executed on host(s) <lsf-server-3.rostclust>, in queue <low-end-normal>, as user <giessing> in cluster <rost_lsf_cluster_1> at Mon Nov 29 09:16:41 2021
+</mnt/home/giessing> was used as the home directory.
+</mnt/project/protdrugaffinity/dg/binding-affinity-prediction/src> was used as the working directory.
+Started at Mon Nov 29 09:16:41 2021
+Terminated at Mon Nov 29 09:21:27 2021
+Results reported at Mon Nov 29 09:21:27 2021
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python binding_prediction.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   398.75 sec.
+    Max Memory :                                 1715 MB
+    Average Memory :                             1187.91 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                26
+    Run time :                                   286 sec.
+    Turnaround time :                            286 sec.
+
+The output (if any) follows:
+
+(['pkd', 'Davis'], 'chemVAE', <Section: INPUT FILES>, True, 2, True, True)
+Using device: cuda
+Using device: cuda
+Finished Tuning
+0.008305316823400787
+[700, 0.0058000000000000005, 2]
+Finished Training
+The rm2 value for this run is:  0.011
+The AUPR for this run is:  0.188
+The Concordance Index (CI) for this run is:  0.591
+The Mean Squared Error (MSE) for this run is:  1.258
+('JAK3(JH1domain-catalytic)', '9926791')
+
+r2m std is:  0.007
+AUPR std is:  0.038
+CIs std is:  0.014
+Best r2m was:  0.008305316823400787
+Best parameters were: [700, 0.0058000000000000005, 2]
+
+
+PS:
+
+Read file <stderr_davis_shuffled_dt.log> for stderr output of this job.
+

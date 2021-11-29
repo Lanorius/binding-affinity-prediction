@@ -1,4 +1,4 @@
-from src.performance_evaluation.stats_and_output import *
+from performance_evaluation.stats_and_output import *
 import torch
 
 

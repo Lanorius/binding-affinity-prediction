@@ -44,22 +44,22 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #######################################################################################################################
 # ################################################parameters and hyper parameters######################################
 
-#  number_of_random_draws = 20
-number_of_random_draws = 2
+number_of_random_draws = 20
+#  number_of_random_draws = 2
 batch_sizes = list(range(10, 1024, 5))
 #  batch_sizes = list(range(10, 2048, 5))
 #  learning_rates = [0.01, 0.001, 0.0001]
 learning_rates = list(np.arange(0.0001, 0.01, 0.0001))  # TODO: debatable choice
 
-numbers_of_epochs = list(range(1, 3))
-#  numbers_of_epochs = list(range(100, 300))
+#  numbers_of_epochs = list(range(1, 3))
+numbers_of_epochs = list(range(100, 300))
 
 #######################################################################################################################
 # ###############################################################train/test split######################################
 
 train_data_split = []
-#  nr_training_splits = 5
-nr_training_splits = 2
+nr_training_splits = 5
+#  nr_training_splits = 2
 
 train_rest, test_split = train_test_split(data_set, test_size=1 / (nr_training_splits+1), random_state=42)
 all_training_samples = train_rest
