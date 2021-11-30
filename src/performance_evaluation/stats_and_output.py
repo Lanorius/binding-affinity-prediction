@@ -16,12 +16,21 @@ def pltcolor(lst):
     return colors
 
 
-def print_loss(loss_vector, data_used, timestamp):
-    plt.plot(loss_vector)
+def print_loss_per_batch(loss_vector_batch, data_used, timestamp):
+    plt.plot(loss_vector_batch)
     plt.title("Loss over Batch")
     plt.xlabel("Batch")
     plt.ylabel("Loss")
     plt.savefig("../Results/Results_"+timestamp+"/loss_over_batch_"+data_used+"_"+timestamp+".png")
+
+
+def print_loss_per_epoch(loss_vector_epoch, data_used, timestamp):
+    plt.clf()
+    plt.plot(loss_vector_epoch)
+    plt.title("Loss over Epoch")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.savefig("../Results/Results_"+timestamp+"/loss_over_epoch_"+data_used+"_"+timestamp+".png")
 
 
 def plot_output(predicted, labels, data_used, timestamp, cols='cornflowerblue', plot_name="scatterplot.png"):

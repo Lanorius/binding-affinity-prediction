@@ -32,6 +32,7 @@ class Trainer:
 
     def train(self, model, data_for_training, amount_of_epochs, batch_size_, tuning=True):
         all_losses = []
+        loss_per_epoch = []
         for epoch_index in range(amount_of_epochs):
 
             running_loss = 0.0
@@ -56,13 +57,15 @@ class Trainer:
                 running_loss += total_loss.item()
 
                 if not tuning:
+                    loss_per_epoch += [running_loss]
                     if i % batch_size_ == (batch_size_ - 1):  # print every n mini-batches
                         print('[%d, %5d] loss: %.7f' % (epoch_index + 1, i + 1, running_loss / batch_size_))
                         all_losses += [running_loss / batch_size_]
                         running_loss = 0.0
 
         if not tuning:
-            print_loss(all_losses, self.data_used, self.timestamp)
+            print_loss_per_batch(all_losses, self.data_used, self.timestamp)
+            print_loss_per_epoch(loss_per_epoch, self.data_used, self.timestamp)
 
 
 class Tester:
