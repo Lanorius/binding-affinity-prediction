@@ -22,7 +22,6 @@ def print_loss(loss_vector, data_used, timestamp):
     plt.xlabel("Batch")
     plt.ylabel("Loss")
     plt.savefig("../Results/Results_"+timestamp+"/loss_over_batch_"+data_used+"_"+timestamp+".png")
-    plt.show()
 
 
 def plot_output(predicted, labels, data_used, timestamp, cols='cornflowerblue', plot_name="scatterplot.png"):
@@ -43,29 +42,42 @@ def plot_output(predicted, labels, data_used, timestamp, cols='cornflowerblue', 
     plt.xlabel("Predicted")
     plt.ylabel("Measured")
     plt.savefig(os.path.join("../Results/Results_"+timestamp+"/", plot_name))
-    plt.show()
 
 
-def only_rm2(all_predicted, all_labels):
-    return emetrics.get_rm2(all_labels, all_predicted)
+def plot_output_hist(predicted, timestamp, plot_name):
+    plt.clf()
+    plt.hist(predicted)
+    plt.title("Interaction Values after predicting.")
+    plt.xlabel("Values")
+    plt.ylabel("Frequencies")
+    plt.savefig(os.path.join("../Results/Results_" + timestamp + "/", plot_name))
+
+    with open(os.path.join("../Results/Results_" + timestamp + "/", "predicted_values.txt"), "w") as g:
+        for s in predicted:
+            g.write(str(s) + " ")
+            g.write("\n")
+
+
+def only_r2m(all_predicted, all_labels):
+    return emetrics.get_r2m(all_labels, all_predicted)
 
 
 def bootstrap_stats(all_predicted, all_labels, data_used):
-    rm2 = emetrics.get_rm2(all_labels, all_predicted)
+    r2m = emetrics.get_r2m(all_labels, all_predicted)
     aupr = emetrics.compute_aupr(all_labels, all_predicted, data_used[0])
     ci = lifelines.utils.concordance_index(all_labels, all_predicted)
     mse = np.square(np.subtract(all_labels, all_predicted)).mean()
 
-    return [rm2, aupr, ci, mse]
+    return  [r2m, aupr, ci, mse]
 
 
 def print_stats(all_predicted, all_labels, data_used, timestamp):
-    rm2 = emetrics.get_rm2(all_labels, all_predicted)
+    r2m = emetrics.get_r2m(all_labels, all_predicted)
     aupr = emetrics.compute_aupr(all_labels, all_predicted, data_used[0])
     ci = lifelines.utils.concordance_index(all_labels, all_predicted)
     mse = np.square(np.subtract(all_labels, all_predicted)).mean()
 
-    print("The rm2 value for this run is: ", round(rm2, 3))
+    print("The r2m value for this run is: ", round (r2m, 3))
 
     print("The AUPR for this run is: ", round(aupr, 3))
 
@@ -74,7 +86,7 @@ def print_stats(all_predicted, all_labels, data_used, timestamp):
     print("The Mean Squared Error (MSE) for this run is: ", round(mse, 3))
 
     file1 = open("../Results/Results_"+timestamp+"/Results_"+data_used[0]+"_"+timestamp+".txt", "a")
-    file1.write("The rm2 value for this run is: "+str(round(rm2, 3))+"\n")
+    file1.write("The r2m value for this run is: "+str(round(r2m, 3))+"\n")
     file1.write("The AUPR for this run is: "+str(round(aupr, 3))+"\n")
     file1.write("The Concordance Index (CI) for this run is: "+str(round(ci, 3))+"\n")
     file1.write("The Mean Squared Error (MSE) for this run is: "+str(round(mse, 3))+"\n")

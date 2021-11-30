@@ -104,14 +104,17 @@ class Tester:
 
         if not tuning:
             plot_output(all_regression_predicted, all_regression_labels, data_used, self.timestamp,
-                       plot_name='scatter_plot_regression_'+data_used[0]+"_"+self.timestamp+".png")
+                        plot_name='scatter_plot_regression_'+data_used[0]+"_"+self.timestamp+".png")
             #  plot_output(all_binary_predicted, all_binary_labels, data_used, plot_name='scatter_plot_classes.png')
             print_stats(all_regression_predicted, all_regression_labels, data_used, self.timestamp)
             #  print_stats(all_binary_predicted, all_binary_labels, data_used)
 
+            plot_output_hist(all_regression_predicted, self.timestamp,
+                             plot_name='hist_after_prediction_'+data_used[0]+"_"+self.timestamp+".png")
+
         else:
-            return only_rm2(all_regression_predicted, all_regression_labels)
-                   #only_rm2(all_binary_predicted, all_binary_labels)
+            return only_r2m(all_regression_predicted, all_regression_labels)
+                   #only_r2m(all_binary_predicted, all_binary_labels)
 
         if nr_of_hard_samples > 0:
             find_hardest_samples(all_regression_predicted, all_regression_labels, all_name_pairs, nr_of_hard_samples)
