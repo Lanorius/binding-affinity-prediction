@@ -30,10 +30,12 @@ class Trainer:
 
         return output_list
 
-    def train(self, model, data_for_training, amount_of_epochs, batch_size_, tuning=True):
+    def train(self, model, data_for_training, number_of_epochs, batch_size_, tuning=True):
+        print("batch_size: "+str(batch_size_))
+        print(number_of_epochs)
         all_losses = []
         loss_per_epoch = []
-        for epoch_index in range(amount_of_epochs):
+        for epoch_index in range(number_of_epochs):
 
             running_loss = 0.0
             for i, (protein_compounds, regression_label, class_label, _) in enumerate(data_for_training):
@@ -57,14 +59,19 @@ class Trainer:
                 running_loss += total_loss.item()
 
                 if not tuning:
-                    loss_per_epoch += [running_loss]
+                    loss_per_epoch += [running_loss]  # TODO: this is actually the spot where you want to implement also the training loss
+                    '''
+                    #  this requires an overhaul, since it often produces empty plots, or it might just be removed
                     if i % batch_size_ == (batch_size_ - 1):  # print every n mini-batches
                         print('[%d, %5d] loss: %.7f' % (epoch_index + 1, i + 1, running_loss / batch_size_))
                         all_losses += [running_loss / batch_size_]
+                        print("batch_size: "+str(batch_size_))
+                        print("len_all_losses: "+str(len(all_losses)))
                         running_loss = 0.0
+                    '''
 
         if not tuning:
-            print_loss_per_batch(all_losses, self.data_used, self.timestamp)
+            #  print_loss_per_batch(all_losses, self.data_used, self.timestamp)  # overhaul or remove
             print_loss_per_epoch(loss_per_epoch, self.data_used, self.timestamp)
 
 

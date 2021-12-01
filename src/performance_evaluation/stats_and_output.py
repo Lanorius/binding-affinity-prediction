@@ -17,6 +17,7 @@ def pltcolor(lst):
 
 
 def print_loss_per_batch(loss_vector_batch, data_used, timestamp):
+    print(loss_vector_batch)
     plt.plot(loss_vector_batch)
     plt.title("Loss over Batch")
     plt.xlabel("Batch")
@@ -25,6 +26,7 @@ def print_loss_per_batch(loss_vector_batch, data_used, timestamp):
 
 
 def print_loss_per_epoch(loss_vector_epoch, data_used, timestamp):
+    print(loss_vector_epoch)
     plt.clf()
     plt.plot(loss_vector_epoch)
     plt.title("Loss over Epoch")
@@ -111,5 +113,5 @@ def find_hardest_samples(all_predicted, all_labels, key_pairs, nr_of_samples):
 
     mean_square_error_list.sort(key=lambda x: x[0], reverse=True)
     mean_square_error_list = mean_square_error_list[:nr_of_samples]
-    for entry in mean_square_error_list:
-        print(str(entry[1]) + '\n')
+    # for entry in mean_square_error_list:
+    # print(str(entry[1]) + '\n')
