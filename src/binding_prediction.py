@@ -50,9 +50,9 @@ batch_sizes = list(range(10, 1024, 5))
 learning_rates = list(np.arange(0.0001, 0.01, 0.0001))  # TODO: debatable choice
 
 if true_run:
-    numbers_of_epochs = list(range(100, 300))
+    numbers_of_epochs = list(range(100, 301))
 else:
-    numbers_of_epochs = list(range(3, 5))
+    numbers_of_epochs = list(range(3, 6))
 
 
 #######################################################################################################################
@@ -63,18 +63,14 @@ train_data_split = []
 if true_run:
     number_of_splits = 5  # three for training, one for validation, one for testing
 else:
-    number_of_splits = 2
+    number_of_splits = 3
 
-train_rest, test_split = train_test_split(data_set, test_size=1 / number_of_splits, random_state=42)
+train_rest, test_split = train_test_split(data_set, test_size=1 / (number_of_splits + 1), random_state=42)
 all_training_samples = train_rest
 for i in range(number_of_splits, 1, -1):
     train_rest, train_split = train_test_split(train_rest, test_size=1 / i, random_state=42)
     train_data_split.append(train_split)
 train_data_split.append(train_rest)
-
-print(len(train_data_split))
-
-print(1/0)
 
 #######################################################################################################################
 # tuning
@@ -89,17 +85,22 @@ best_parameters_overall = [0, 0, 0]
 current_best_r2m = 0
 
 print('Using device:', device)
+
+if use_model == "chemVAE":
+    model = PcNet()
+elif use_model == "chemBERTa":
+    model = PcNet_chemBERTa()
+elif use_model == "RDKit":
+    model = PcNet_RDKit()
+else:
+    raise Exception("Model is undefined.")
+# model = EmbeddingReducingNN()
+
+losses_per_epoch = []  #
+
 for test_train_index in tqdm(range(number_of_splits)):
     for optimization in tqdm(range(number_of_random_draws)):
-        if use_model == "chemVAE":
-            model = PcNet()
-        elif use_model == "chemBERTa":
-            model = PcNet_chemBERTa()
-        elif use_model == "RDKit":
-            model = PcNet_RDKit()
-        else:
-            raise Exception("Model is undefined.")
-        # model = EmbeddingReducingNN()
+
         batch_size = random.choice(batch_sizes)
         learning_rate = random.choice(learning_rates)
         number_of_epochs = random.choice(numbers_of_epochs)
@@ -124,7 +125,9 @@ for test_train_index in tqdm(range(number_of_splits)):
             testing_tests.append(torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size,
                                                              shuffle=False))
 
-        trainer.train(model, training_sets[test_train_index], number_of_epochs, batch_size)
+        new_loss_per_epoch = trainer.train(model, training_sets[test_train_index], number_of_epochs, batch_size)
+        losses_per_epoch += [new_loss_per_epoch]
+        print(len(losses_per_epoch))
         performance_regression = tester.test(model, testing_tests[test_train_index], data_used)
         if performance_regression > current_best_r2m:
             current_best_r2m = performance_regression
