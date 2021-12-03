@@ -3,16 +3,9 @@ import torch.optim as optim
 from sklearn.model_selection import train_test_split
 import numpy as np
 
-#  these work on windows, but not on ubuntu
-#  from src.data_loading.process_inputs import parse_config
-#  from src.data_loading.Dataset import Dataset
-#  from src.models.neural_net import PcNet, EmbeddingReducingNN
-#  from src.models.training import Trainer, Tester, ModelManager
-#  from src.performance_evaluation.standard_error_computation import calculate_standard_error_by_bootstrapping
-
 from data_loading.process_inputs import parse_config
 from data_loading.Dataset import Dataset
-from models.neural_net import PcNet, PcNet_chemBERTa, PcNet_RDKit, EmbeddingReducingNN
+from models.neural_net import PcNet, PcNet_chemBERTa, PcNet_RDKit  # , EmbeddingReducingNN
 from models.training import Trainer, Tester, ModelManager
 from performance_evaluation.standard_error_computation import calculate_standard_error_by_bootstrapping
 
@@ -23,7 +16,7 @@ import os
 import time  # for timestamps to easily distinguish results
 
 #######################################################################################################################
-# #######################################ini file  Parser for dataset selection########################################
+# ini file  Parser for dataset selection
 
 data_used, use_model, files, do_regression, nr_prediction_classes, shuffle_drugs, shuffle_targets = parse_config()
 print(parse_config())
@@ -42,7 +35,7 @@ class_borders = np.linspace(data_set.data_ranges[data_set.data_type][0], data_se
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 #######################################################################################################################
-# ################################################parameters and hyper parameters######################################
+# parameters and hyper parameters
 
 true_run = False  # if False a dummy run to observe bugs is started
 
@@ -63,24 +56,28 @@ else:
 
 
 #######################################################################################################################
-# ###############################################################train/test split######################################
+# train/test split
 
 train_data_split = []
 
 if true_run:
-    nr_training_splits = 5
+    number_of_splits = 5  # three for training, one for validation, one for testing
 else:
-    nr_training_splits = 2
+    number_of_splits = 2
 
-train_rest, test_split = train_test_split(data_set, test_size=1 / (nr_training_splits+1), random_state=42)
+train_rest, test_split = train_test_split(data_set, test_size=1 / number_of_splits, random_state=42)
 all_training_samples = train_rest
-for i in range(nr_training_splits, 1, -1):
+for i in range(number_of_splits, 1, -1):
     train_rest, train_split = train_test_split(train_rest, test_size=1 / i, random_state=42)
     train_data_split.append(train_split)
 train_data_split.append(train_rest)
 
+print(len(train_data_split))
+
+print(1/0)
+
 #######################################################################################################################
-# ###############################################################tuning################################################
+# tuning
 
 t = time.localtime()
 timestamp = time.strftime('%b-%d-%Y_%H%M', t)
@@ -92,8 +89,7 @@ best_parameters_overall = [0, 0, 0]
 current_best_r2m = 0
 
 print('Using device:', device)
-for test_train_index in tqdm(range(nr_training_splits)):
-    # print(torch.cuda.memory_summary(device,abbreviated=False))############################################
+for test_train_index in tqdm(range(number_of_splits)):
     for optimization in tqdm(range(number_of_random_draws)):
         if use_model == "chemVAE":
             model = PcNet()
@@ -101,6 +97,8 @@ for test_train_index in tqdm(range(nr_training_splits)):
             model = PcNet_chemBERTa()
         elif use_model == "RDKit":
             model = PcNet_RDKit()
+        else:
+            raise Exception("Model is undefined.")
         # model = EmbeddingReducingNN()
         batch_size = random.choice(batch_sizes)
         learning_rate = random.choice(learning_rates)
@@ -137,7 +135,7 @@ print(current_best_r2m)
 print(best_parameters_overall)
 
 #######################################################################################################################
-# ###############################################################training##############################################
+# training
 
 if use_model == "chemVAE":
     model = PcNet()
@@ -145,6 +143,8 @@ elif use_model == "chemBERTa":
     model = PcNet_chemBERTa()
 elif use_model == "RDKit":
     model = PcNet_RDKit()
+else:
+    raise Exception("Model is undefined.")
 # model = EmbeddingReducingNN()
 trainer = Trainer(device, optim.Adam(model.parameters(), lr=best_parameters_overall[1]), nr_prediction_classes,
                   class_borders, data_used[0], timestamp)
@@ -166,17 +166,10 @@ model.load_state_dict(torch.load(os.path.join("../Results/Results_"+timestamp+"/
 
 
 #######################################################################################################################
-# ###############################################################testing###############################################
+# testing
 
 calculate_standard_error_by_bootstrapping(model_manager, test_loader, test_split, best_parameters_overall[0], data_used,
                                           timestamp)
 
 print("Best r2m was: ", current_best_r2m)
 print("Best parameters were:", best_parameters_overall)
-
-"""
-model = EmbeddingReducingNN()
-model.load_state_dict(torch.load(os.path.join('..', 'model.pth')))
-model_manager = ModelManager(model, None, None)
-model_manager.predict(test_split, device)
-"""
