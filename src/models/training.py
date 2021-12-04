@@ -56,7 +56,8 @@ class Trainer:
                 self.optimizer.step()
                 running_loss += total_loss.item()
 
-            loss_per_epoch += [running_loss/batch_size]  # TODO: this is actually the spot where you want to implement also the training loss
+            loss_per_epoch += [running_loss/batch_size]
+            # TODO: this is actually the spot where you want to implement also the training loss
             '''
             #  this requires an overhaul, since it often produces empty plots, or it might just be removed
             if i % batch_size == (batch_size - 1):  # print every n mini-batches
