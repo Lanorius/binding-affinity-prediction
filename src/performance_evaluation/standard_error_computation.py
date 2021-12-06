@@ -9,8 +9,6 @@ import torch
 def calculate_standard_error_by_bootstrapping(model_manager, test_loader, test_set, batch_size, data_used, timestamp):
     # TODO: bootstrap binary predictions
 
-    model_manager.test(test_loader, data_used, tuning=False)
-
     # for standard deviations
     r2ms = []
     auprs = []

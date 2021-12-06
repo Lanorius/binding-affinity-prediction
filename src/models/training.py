@@ -57,7 +57,10 @@ class Trainer:
                 running_loss += total_loss.item()
 
             loss_per_epoch += [running_loss/batch_size]
-            # TODO: this is actually the spot where you want to implement also the training loss
+            # print('[%d, %5d] loss: %.7f' % (epoch_index + 1, i + 1, running_loss / batch_size))
+            print('[%d] loss: %.7f' % (epoch_index + 1, running_loss / batch_size))
+            # print(running_loss/batch_size)
+
             '''
             #  this requires an overhaul, since it often produces empty plots, or it might just be removed
             if i % batch_size == (batch_size - 1):  # print every n mini-batches
@@ -70,8 +73,10 @@ class Trainer:
 
         '''
         print_loss_per_batch(all_losses, self.data_used, self.timestamp)  # overhaul or remove
-        print_loss_per_epoch(loss_per_epoch, self.data_used, self.timestamp)
+        print_loss_per_epoch(loss_per_epoch, self.data_used, self.timestamp)  # all of this should be moved outside
+        of this function
         '''
+        # print(loss_per_epoch)
         return loss_per_epoch
 
 
@@ -92,7 +97,7 @@ class Tester:
         for i in range(len(name_pairs[0])):
             all_name_pairs.append((name_pairs[0][i], name_pairs[1][i]))
 
-    def test(self, model, data_for_testing, data_used, tuning=True, bootstrap=False, nr_of_hard_samples=1):
+    def test(self, model, data_for_testing, data_used, final_prediction=False, bootstrap=False, nr_of_hard_samples=1):
         all_regression_labels = []
         all_regression_predicted = []
         all_name_pairs = []
@@ -112,7 +117,7 @@ class Tester:
             return bootstrap_stats(all_regression_predicted, all_regression_labels, data_used)
                    #bootstrap_stats(all_binary_predicted, all_binary_labels, data_used)
 
-        if not tuning:
+        if final_prediction:
             plot_output(all_regression_predicted, all_regression_labels, data_used, self.timestamp,
                         plot_name='scatter_plot_regression_'+data_used[0]+"_"+self.timestamp+".png")
             #  plot_output(all_binary_predicted, all_binary_labels, data_used, plot_name='scatter_plot_classes.png')
@@ -136,11 +141,11 @@ class ModelManager:
         self.trainer = trainer
         self.tester = tester
 
-    def train(self, data_for_training, amount_of_epochs, batch_size, tuning=True):
-        self.trainer.train(self.model, data_for_training, amount_of_epochs, batch_size, tuning)
+    def train(self, data_for_training, amount_of_epochs, batch_size):
+        self.trainer.train(self.model, data_for_training, amount_of_epochs, batch_size)
 
-    def test(self, data_for_testing, data_used, tuning=True, bootstrap=False):
-        return self.tester.test(self.model, data_for_testing, data_used, tuning, bootstrap)
+    def test(self, data_for_testing, data_used, final_prediction=False, bootstrap=False):
+        return self.tester.test(self.model, data_for_testing, data_used, final_prediction, bootstrap)
 
     def save_model(self, file_path):
         self.model.save(file_path)

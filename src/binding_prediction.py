@@ -40,7 +40,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 true_run = False  # if False a dummy run to observe bugs is started
 
 if true_run:
-    number_of_random_draws = 20
+    number_of_random_draws = 10
 else:
     number_of_random_draws = 2
 
@@ -63,7 +63,7 @@ train_data_split = []
 if true_run:
     number_of_splits = 5  # three for training, one for validation, one for testing
 else:
-    number_of_splits = 3
+    number_of_splits = 2
 
 train_rest, test_split = train_test_split(data_set, test_size=1 / (number_of_splits + 1), random_state=42)
 all_training_samples = train_rest
@@ -96,7 +96,7 @@ else:
     raise Exception("Model is undefined.")
 # model = EmbeddingReducingNN()
 
-losses_per_epoch = []  #
+losses_per_epoch = []
 
 for test_train_index in tqdm(range(number_of_splits)):
     for optimization in tqdm(range(number_of_random_draws)):
@@ -111,7 +111,7 @@ for test_train_index in tqdm(range(number_of_splits)):
 
         # create n train and test sets
         training_sets = []
-        testing_tests = []
+        validation_set_ = []  # isn't this a validation set?
 
         for i in range(len(train_data_split)):
             train_dataset = []
@@ -122,13 +122,12 @@ for test_train_index in tqdm(range(number_of_splits)):
                     train_dataset += train_data_split[j]
             training_sets.append(torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size,
                                                              shuffle=False))
-            testing_tests.append(torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size,
-                                                             shuffle=False))
+            validation_set_.append(torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size,
+                                                               shuffle=False))
 
         new_loss_per_epoch = trainer.train(model, training_sets[test_train_index], number_of_epochs, batch_size)
         losses_per_epoch += [new_loss_per_epoch]
-        print(len(losses_per_epoch))
-        performance_regression = tester.test(model, testing_tests[test_train_index], data_used)
+        performance_regression = tester.test(model, validation_set_[test_train_index], data_used)
         if performance_regression > current_best_r2m:
             current_best_r2m = performance_regression
             best_parameters_overall = [batch_size, learning_rate, number_of_epochs]
@@ -158,7 +157,7 @@ train_loader = torch.utils.data.DataLoader(dataset=all_training_samples, batch_s
                                            shuffle=False)
 test_loader = torch.utils.data.DataLoader(dataset=test_split, batch_size=best_parameters_overall[0], shuffle=False)
 
-model_manager.train(train_loader, best_parameters_overall[2], best_parameters_overall[0], tuning=False)
+model_manager.train(train_loader, best_parameters_overall[2], best_parameters_overall[0])
 print('Finished Training')
 
 
@@ -171,6 +170,7 @@ model.load_state_dict(torch.load(os.path.join("../Results/Results_"+timestamp+"/
 #######################################################################################################################
 # testing
 
+model_manager.test(test_loader, data_used, final_prediction=True)
 calculate_standard_error_by_bootstrapping(model_manager, test_loader, test_split, best_parameters_overall[0], data_used,
                                           timestamp)
 
