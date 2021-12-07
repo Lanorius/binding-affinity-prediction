@@ -76,7 +76,7 @@ def squared_error_zero(y_obs, y_pred):
     return 1 - (upp / float(down))
 
 
-def get_rm2(ys_orig, ys_line):
+def get_r2m(ys_orig, ys_line):
     r2 = r_squared_error(ys_orig, ys_line)
     r02 = squared_error_zero(ys_orig, ys_line)
 

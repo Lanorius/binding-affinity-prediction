@@ -3,16 +3,9 @@ import torch.optim as optim
 from sklearn.model_selection import train_test_split
 import numpy as np
 
-#  these work on windows, but not on ubuntu
-#  from src.data_loading.process_inputs import parse_config
-#  from src.data_loading.Dataset import Dataset
-#  from src.models.neural_net import PcNet, EmbeddingReducingNN
-#  from src.models.training import Trainer, Tester, ModelManager
-#  from src.performance_evaluation.standard_error_computation import calculate_standard_error_by_bootstrapping
-
 from data_loading.process_inputs import parse_config
 from data_loading.Dataset import Dataset
-from models.neural_net import PcNet, PcNet_chemBERTa, PcNet_RDKit, EmbeddingReducingNN
+from models.neural_net import PcNet, PcNet_chemBERTa, PcNet_RDKit  # , EmbeddingReducingNN
 from models.training import Trainer, Tester, ModelManager
 from performance_evaluation.standard_error_computation import calculate_standard_error_by_bootstrapping
 
@@ -23,7 +16,7 @@ import os
 import time  # for timestamps to easily distinguish results
 
 #######################################################################################################################
-# #######################################ini file  Parser for dataset selection########################################
+# ini file  Parser for dataset selection
 
 data_used, use_model, files, do_regression, nr_prediction_classes, shuffle_drugs, shuffle_targets = parse_config()
 print(parse_config())
@@ -42,34 +35,45 @@ class_borders = np.linspace(data_set.data_ranges[data_set.data_type][0], data_se
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 #######################################################################################################################
-# ################################################parameters and hyper parameters######################################
+# parameters and hyper parameters
 
-number_of_random_draws = 20
-#  number_of_random_draws = 2
+true_run = False  # if False a dummy run to observe bugs is started
+
+if true_run:
+    number_of_random_draws = 10
+else:
+    number_of_random_draws = 2
+
 batch_sizes = list(range(10, 1024, 5))
 #  batch_sizes = list(range(10, 2048, 5))
 #  learning_rates = [0.01, 0.001, 0.0001]
 learning_rates = list(np.arange(0.0001, 0.01, 0.0001))  # TODO: debatable choice
 
-#  numbers_of_epochs = list(range(1, 3))
-numbers_of_epochs = list(range(100, 300))
+if true_run:
+    numbers_of_epochs = list(range(100, 301))
+else:
+    numbers_of_epochs = list(range(3, 6))
+
 
 #######################################################################################################################
-# ###############################################################train/test split######################################
+# train/test split
 
 train_data_split = []
-nr_training_splits = 5
-#  nr_training_splits = 2
 
-train_rest, test_split = train_test_split(data_set, test_size=1 / (nr_training_splits+1), random_state=42)
+if true_run:
+    number_of_splits = 5  # three for training, one for validation, one for testing
+else:
+    number_of_splits = 2
+
+train_rest, test_split = train_test_split(data_set, test_size=1 / (number_of_splits + 1), random_state=42)
 all_training_samples = train_rest
-for i in range(nr_training_splits, 1, -1):
+for i in range(number_of_splits, 1, -1):
     train_rest, train_split = train_test_split(train_rest, test_size=1 / i, random_state=42)
     train_data_split.append(train_split)
 train_data_split.append(train_rest)
 
 #######################################################################################################################
-# ###############################################################tuning################################################
+# tuning
 
 t = time.localtime()
 timestamp = time.strftime('%b-%d-%Y_%H%M', t)
@@ -80,17 +84,23 @@ best_parameters_overall = [0, 0, 0]
 
 current_best_r2m = 0
 
-for test_train_index in tqdm(range(nr_training_splits)):
-    print('Using device:', device)
-    # print(torch.cuda.memory_summary(device,abbreviated=False))############################################
+print('Using device:', device)
+
+if use_model == "chemVAE":
+    model = PcNet()
+elif use_model == "chemBERTa":
+    model = PcNet_chemBERTa()
+elif use_model == "RDKit":
+    model = PcNet_RDKit()
+else:
+    raise Exception("Model is undefined.")
+# model = EmbeddingReducingNN()
+
+losses_per_epoch = []
+
+for test_train_index in tqdm(range(number_of_splits)):
     for optimization in tqdm(range(number_of_random_draws)):
-        if use_model == "chemVAE":
-            model = PcNet()
-        elif use_model == "chemBERTa":
-            model = PcNet_chemBERTa()
-        elif use_model == "RDKit":
-            model = PcNet_RDKit()
-        # model = EmbeddingReducingNN()
+
         batch_size = random.choice(batch_sizes)
         learning_rate = random.choice(learning_rates)
         number_of_epochs = random.choice(numbers_of_epochs)
@@ -101,7 +111,7 @@ for test_train_index in tqdm(range(nr_training_splits)):
 
         # create n train and test sets
         training_sets = []
-        testing_tests = []
+        validation_set_ = []  # isn't this a validation set?
 
         for i in range(len(train_data_split)):
             train_dataset = []
@@ -112,11 +122,12 @@ for test_train_index in tqdm(range(nr_training_splits)):
                     train_dataset += train_data_split[j]
             training_sets.append(torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size,
                                                              shuffle=False))
-            testing_tests.append(torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size,
-                                                             shuffle=False))
+            validation_set_.append(torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size,
+                                                               shuffle=False))
 
-        trainer.train(model, training_sets[test_train_index], number_of_epochs, batch_size)
-        performance_regression = tester.test(model, testing_tests[test_train_index], data_used)
+        new_loss_per_epoch = trainer.train(model, training_sets[test_train_index], number_of_epochs, batch_size)
+        losses_per_epoch += [new_loss_per_epoch]
+        performance_regression = tester.test(model, validation_set_[test_train_index], data_used)
         if performance_regression > current_best_r2m:
             current_best_r2m = performance_regression
             best_parameters_overall = [batch_size, learning_rate, number_of_epochs]
@@ -126,7 +137,7 @@ print(current_best_r2m)
 print(best_parameters_overall)
 
 #######################################################################################################################
-# ###############################################################training##############################################
+# training
 
 if use_model == "chemVAE":
     model = PcNet()
@@ -134,6 +145,8 @@ elif use_model == "chemBERTa":
     model = PcNet_chemBERTa()
 elif use_model == "RDKit":
     model = PcNet_RDKit()
+else:
+    raise Exception("Model is undefined.")
 # model = EmbeddingReducingNN()
 trainer = Trainer(device, optim.Adam(model.parameters(), lr=best_parameters_overall[1]), nr_prediction_classes,
                   class_borders, data_used[0], timestamp)
@@ -144,7 +157,7 @@ train_loader = torch.utils.data.DataLoader(dataset=all_training_samples, batch_s
                                            shuffle=False)
 test_loader = torch.utils.data.DataLoader(dataset=test_split, batch_size=best_parameters_overall[0], shuffle=False)
 
-model_manager.train(train_loader, best_parameters_overall[2], best_parameters_overall[0], tuning=False)
+model_manager.train(train_loader, best_parameters_overall[2], best_parameters_overall[0])
 print('Finished Training')
 
 
@@ -155,17 +168,11 @@ model.load_state_dict(torch.load(os.path.join("../Results/Results_"+timestamp+"/
 
 
 #######################################################################################################################
-# ###############################################################testing###############################################
+# testing
 
+model_manager.test(test_loader, data_used, final_prediction=True)
 calculate_standard_error_by_bootstrapping(model_manager, test_loader, test_split, best_parameters_overall[0], data_used,
                                           timestamp)
 
 print("Best r2m was: ", current_best_r2m)
 print("Best parameters were:", best_parameters_overall)
-
-"""
-model = EmbeddingReducingNN()
-model.load_state_dict(torch.load(os.path.join('..', 'model.pth')))
-model_manager = ModelManager(model, None, None)
-model_manager.predict(test_split, device)
-"""

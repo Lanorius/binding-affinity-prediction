@@ -30,9 +30,10 @@ class Trainer:
 
         return output_list
 
-    def train(self, model, data_for_training, amount_of_epochs, batch_size_, tuning=True):
+    def train(self, model, data_for_training, number_of_epochs, batch_size):
         all_losses = []
-        for epoch_index in range(amount_of_epochs):
+        loss_per_epoch = []
+        for epoch_index in range(number_of_epochs):
 
             running_loss = 0.0
             for i, (protein_compounds, regression_label, class_label, _) in enumerate(data_for_training):
@@ -55,14 +56,28 @@ class Trainer:
                 self.optimizer.step()
                 running_loss += total_loss.item()
 
-                if not tuning:
-                    if i % batch_size_ == (batch_size_ - 1):  # print every n mini-batches
-                        print('[%d, %5d] loss: %.7f' % (epoch_index + 1, i + 1, running_loss / batch_size_))
-                        all_losses += [running_loss / batch_size_]
-                        running_loss = 0.0
+            loss_per_epoch += [running_loss/batch_size]
+            # print('[%d, %5d] loss: %.7f' % (epoch_index + 1, i + 1, running_loss / batch_size))
+            print('[%d] loss: %.7f' % (epoch_index + 1, running_loss / batch_size))
+            # print(running_loss/batch_size)
 
-        if not tuning:
-            print_loss(all_losses, self.data_used, self.timestamp)
+            '''
+            #  this requires an overhaul, since it often produces empty plots, or it might just be removed
+            if i % batch_size == (batch_size - 1):  # print every n mini-batches
+                print('[%d, %5d] loss: %.7f' % (epoch_index + 1, i + 1, running_loss / batch_size))
+                all_losses += [running_loss / batch_size]
+                print("batch_size: "+str(batch_size))
+                print("len_all_losses: "+str(len(all_losses)))
+                running_loss = 0.0
+            '''
+
+        '''
+        print_loss_per_batch(all_losses, self.data_used, self.timestamp)  # overhaul or remove
+        print_loss_per_epoch(loss_per_epoch, self.data_used, self.timestamp)  # all of this should be moved outside
+        of this function
+        '''
+        # print(loss_per_epoch)
+        return loss_per_epoch
 
 
 class Tester:
@@ -82,7 +97,7 @@ class Tester:
         for i in range(len(name_pairs[0])):
             all_name_pairs.append((name_pairs[0][i], name_pairs[1][i]))
 
-    def test(self, model, data_for_testing, data_used, tuning=True, bootstrap=False, nr_of_hard_samples=1):
+    def test(self, model, data_for_testing, data_used, final_prediction=False, bootstrap=False, nr_of_hard_samples=1):
         all_regression_labels = []
         all_regression_predicted = []
         all_name_pairs = []
@@ -102,16 +117,19 @@ class Tester:
             return bootstrap_stats(all_regression_predicted, all_regression_labels, data_used)
                    #bootstrap_stats(all_binary_predicted, all_binary_labels, data_used)
 
-        if not tuning:
+        if final_prediction:
             plot_output(all_regression_predicted, all_regression_labels, data_used, self.timestamp,
-                       plot_name='scatter_plot_regression_'+data_used[0]+"_"+self.timestamp+".png")
+                        plot_name='scatter_plot_regression_'+data_used[0]+"_"+self.timestamp+".png")
             #  plot_output(all_binary_predicted, all_binary_labels, data_used, plot_name='scatter_plot_classes.png')
             print_stats(all_regression_predicted, all_regression_labels, data_used, self.timestamp)
             #  print_stats(all_binary_predicted, all_binary_labels, data_used)
 
+            plot_output_hist(all_regression_predicted, self.timestamp,
+                             plot_name='hist_after_prediction_'+data_used[0]+"_"+self.timestamp+".png")
+
         else:
-            return only_rm2(all_regression_predicted, all_regression_labels)
-                   #only_rm2(all_binary_predicted, all_binary_labels)
+            return only_r2m(all_regression_predicted, all_regression_labels)
+                   #only_r2m(all_binary_predicted, all_binary_labels)
 
         if nr_of_hard_samples > 0:
             find_hardest_samples(all_regression_predicted, all_regression_labels, all_name_pairs, nr_of_hard_samples)
@@ -123,11 +141,11 @@ class ModelManager:
         self.trainer = trainer
         self.tester = tester
 
-    def train(self, data_for_training, amount_of_epochs, batch_size_, tuning=True):
-        self.trainer.train(self.model, data_for_training, amount_of_epochs, batch_size_, tuning)
+    def train(self, data_for_training, amount_of_epochs, batch_size):
+        self.trainer.train(self.model, data_for_training, amount_of_epochs, batch_size)
 
-    def test(self, data_for_testing, data_used, tuning=True, bootstrap=False):
-        return self.tester.test(self.model, data_for_testing, data_used, tuning, bootstrap)
+    def test(self, data_for_testing, data_used, final_prediction=False, bootstrap=False):
+        return self.tester.test(self.model, data_for_testing, data_used, final_prediction, bootstrap)
 
     def save_model(self, file_path):
         self.model.save(file_path)
