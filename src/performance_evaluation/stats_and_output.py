@@ -16,6 +16,7 @@ def pltcolor(lst):
     return colors
 
 
+'''
 def print_loss_per_batch(loss_vector_batch, data_used, timestamp):
     print(loss_vector_batch)
     plt.plot(loss_vector_batch)
@@ -23,12 +24,19 @@ def print_loss_per_batch(loss_vector_batch, data_used, timestamp):
     plt.xlabel("Batch")
     plt.ylabel("Loss")
     plt.savefig("../Results/Results_"+timestamp+"/loss_over_batch_"+data_used+"_"+timestamp+".png")
+'''
+# TODO: check if obsolete
 
 
-def print_loss_per_epoch(loss_vector_epoch, data_used, timestamp):
-    print(loss_vector_epoch)
+def print_loss_per_epoch(validation_loss_vector, training_loss_vector, data_used, timestamp):
+    print(validation_loss_vector)
+    print(training_loss_vector)
     plt.clf()
-    plt.plot(loss_vector_epoch)
+    x = np.arange(len(validation_loss_vector))
+    ax = plt.subplot(111)
+    ax.plot(x, validation_loss_vector, label='Validation Loss')
+    ax.plot(x, training_loss_vector, label='Training Loss')
+    ax.legend()
     plt.title("Loss over Epoch")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
@@ -79,7 +87,7 @@ def bootstrap_stats(all_predicted, all_labels, data_used):
     ci = lifelines.utils.concordance_index(all_labels, all_predicted)
     mse = np.square(np.subtract(all_labels, all_predicted)).mean()
 
-    return  [r2m, aupr, ci, mse]
+    return [r2m, aupr, ci, mse]
 
 
 def print_stats(all_predicted, all_labels, data_used, timestamp):
@@ -88,7 +96,7 @@ def print_stats(all_predicted, all_labels, data_used, timestamp):
     ci = lifelines.utils.concordance_index(all_labels, all_predicted)
     mse = np.square(np.subtract(all_labels, all_predicted)).mean()
 
-    print("The r2m value for this run is: ", round (r2m, 3))
+    print("The r2m value for this run is: ", round(r2m, 3))
 
     print("The AUPR for this run is: ", round(aupr, 3))
 
@@ -115,3 +123,5 @@ def find_hardest_samples(all_predicted, all_labels, key_pairs, nr_of_samples):
     mean_square_error_list = mean_square_error_list[:nr_of_samples]
     # for entry in mean_square_error_list:
     # print(str(entry[1]) + '\n')
+
+    return mean_square_error_list

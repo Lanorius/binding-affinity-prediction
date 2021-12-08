@@ -2,12 +2,14 @@ import torch
 import torch.optim as optim
 from sklearn.model_selection import train_test_split
 import numpy as np
+import statistics
 
 from data_loading.process_inputs import parse_config
 from data_loading.Dataset import Dataset
 from models.neural_net import PcNet, PcNet_chemBERTa, PcNet_RDKit  # , EmbeddingReducingNN
 from models.training import Trainer, Tester, ModelManager
 from performance_evaluation.standard_error_computation import calculate_standard_error_by_bootstrapping
+from performance_evaluation.stats_and_output import *
 
 import random
 from tqdm import tqdm
@@ -42,12 +44,12 @@ true_run = False  # if False a dummy run to observe bugs is started
 if true_run:
     number_of_random_draws = 10
 else:
-    number_of_random_draws = 2
+    number_of_random_draws = 3
 
 batch_sizes = list(range(10, 1024, 5))
 #  batch_sizes = list(range(10, 2048, 5))
-#  learning_rates = [0.01, 0.001, 0.0001]
-learning_rates = list(np.arange(0.0001, 0.01, 0.0001))  # TODO: debatable choice
+learning_rates = [0.01, 0.001, 0.0001]
+#  learning_rates = list(np.arange(0.0001, 0.01, 0.0001))  # TODO: sometimes causes errors
 
 if true_run:
     numbers_of_epochs = list(range(100, 301))
@@ -81,8 +83,10 @@ os.mkdir("../Results/Results_"+timestamp)
 
 
 best_parameters_overall = [0, 0, 0]
-
 current_best_r2m = 0
+
+losses_per_epoch = []
+best_loss_per_epoch = []
 
 print('Using device:', device)
 
@@ -96,7 +100,6 @@ else:
     raise Exception("Model is undefined.")
 # model = EmbeddingReducingNN()
 
-losses_per_epoch = []
 
 for test_train_index in tqdm(range(number_of_splits)):
     for optimization in tqdm(range(number_of_random_draws)):
@@ -125,12 +128,24 @@ for test_train_index in tqdm(range(number_of_splits)):
             validation_set_.append(torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size,
                                                                shuffle=False))
 
-        new_loss_per_epoch = trainer.train(model, training_sets[test_train_index], number_of_epochs, batch_size)
-        losses_per_epoch += [new_loss_per_epoch]
+        new_loss_per_epoch = trainer.train(model, training_sets[test_train_index], number_of_epochs, batch_size,
+                                           final_training=False)
+        # losses_per_epoch += [new_loss_per_epoch]  # TODO: keeping all loses per epoch might be useful
+
+        # uses r2m as cutoff for best parameters
         performance_regression = tester.test(model, validation_set_[test_train_index], data_used)
         if performance_regression > current_best_r2m:
             current_best_r2m = performance_regression
+            best_loss_per_epoch = new_loss_per_epoch
             best_parameters_overall = [batch_size, learning_rate, number_of_epochs]
+        '''
+        if len(best_loss_per_epoch) == 0 or (statistics.mean(new_loss_per_epoch[-50:]) < (statistics.mean(
+                best_loss_per_epoch[-50:]))):
+            best_loss_per_epoch = new_loss_per_epoch
+            best_parameters_overall = [batch_size, learning_rate, number_of_epochs]
+        '''
+
+
 
 print('Finished Tuning')
 print(current_best_r2m)
@@ -157,7 +172,9 @@ train_loader = torch.utils.data.DataLoader(dataset=all_training_samples, batch_s
                                            shuffle=False)
 test_loader = torch.utils.data.DataLoader(dataset=test_split, batch_size=best_parameters_overall[0], shuffle=False)
 
-model_manager.train(train_loader, best_parameters_overall[2], best_parameters_overall[0])
+training_loss_per_epoch = model_manager.train(train_loader, best_parameters_overall[2], best_parameters_overall[0],
+                                              final_training=True)
+print(training_loss_per_epoch)
 print('Finished Training')
 
 
@@ -166,11 +183,11 @@ model_manager.save_model(os.path.join("../Results/Results_"+timestamp+"/model_"+
 model.load_state_dict(torch.load(os.path.join("../Results/Results_"+timestamp+"/model_" +
                                               data_used[0]+"_"+timestamp+'.pth')))
 
+print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0], timestamp)
 
 #######################################################################################################################
 # testing
 
-model_manager.test(test_loader, data_used, final_prediction=True)
 calculate_standard_error_by_bootstrapping(model_manager, test_loader, test_split, best_parameters_overall[0], data_used,
                                           timestamp)
 

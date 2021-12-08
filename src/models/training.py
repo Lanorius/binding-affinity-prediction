@@ -30,7 +30,7 @@ class Trainer:
 
         return output_list
 
-    def train(self, model, data_for_training, number_of_epochs, batch_size):
+    def train(self, model, data_for_training, number_of_epochs, batch_size, final_training):
         all_losses = []
         loss_per_epoch = []
         for epoch_index in range(number_of_epochs):
@@ -58,7 +58,8 @@ class Trainer:
 
             loss_per_epoch += [running_loss/batch_size]
             # print('[%d, %5d] loss: %.7f' % (epoch_index + 1, i + 1, running_loss / batch_size))
-            print('[%d] loss: %.7f' % (epoch_index + 1, running_loss / batch_size))
+            if final_training:
+                print('[%d] loss: %.7f' % (epoch_index + 1, running_loss / batch_size))
             # print(running_loss/batch_size)
 
             '''
@@ -76,7 +77,8 @@ class Trainer:
         print_loss_per_epoch(loss_per_epoch, self.data_used, self.timestamp)  # all of this should be moved outside
         of this function
         '''
-        # print(loss_per_epoch)
+
+        print(loss_per_epoch)
         return loss_per_epoch
 
 
@@ -141,8 +143,8 @@ class ModelManager:
         self.trainer = trainer
         self.tester = tester
 
-    def train(self, data_for_training, amount_of_epochs, batch_size):
-        self.trainer.train(self.model, data_for_training, amount_of_epochs, batch_size)
+    def train(self, data_for_training, amount_of_epochs, batch_size, final_training):
+        self.trainer.train(self.model, data_for_training, amount_of_epochs, batch_size, final_training)
 
     def test(self, data_for_testing, data_used, final_prediction=False, bootstrap=False):
         return self.tester.test(self.model, data_for_testing, data_used, final_prediction, bootstrap)
