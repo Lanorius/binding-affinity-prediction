@@ -44,7 +44,7 @@ true_run = False  # if False a dummy run to observe bugs is started
 if true_run:
     number_of_random_draws = 10
 else:
-    number_of_random_draws = 3
+    number_of_random_draws = 2
 
 batch_sizes = list(range(10, 1024, 5))
 #  batch_sizes = list(range(10, 2048, 5))
@@ -90,19 +90,18 @@ best_loss_per_epoch = []
 
 print('Using device:', device)
 
-if use_model == "chemVAE":
-    model = PcNet()
-elif use_model == "chemBERTa":
-    model = PcNet_chemBERTa()
-elif use_model == "RDKit":
-    model = PcNet_RDKit()
-else:
-    raise Exception("Model is undefined.")
-# model = EmbeddingReducingNN()
-
-
 for test_train_index in tqdm(range(number_of_splits)):
     for optimization in tqdm(range(number_of_random_draws)):
+
+        if use_model == "chemVAE":
+            model = PcNet()
+        elif use_model == "chemBERTa":
+            model = PcNet_chemBERTa()
+        elif use_model == "RDKit":
+            model = PcNet_RDKit()
+        else:
+            raise Exception("Model is undefined.")
+        # model = EmbeddingReducingNN()
 
         batch_size = random.choice(batch_sizes)
         learning_rate = random.choice(learning_rates)
@@ -144,8 +143,8 @@ for test_train_index in tqdm(range(number_of_splits)):
             best_loss_per_epoch = new_loss_per_epoch
             best_parameters_overall = [batch_size, learning_rate, number_of_epochs]
         '''
-
-
+        # print(performance_regression)
+        # print(best_parameters_overall)
 
 print('Finished Tuning')
 print(current_best_r2m)
@@ -174,6 +173,7 @@ test_loader = torch.utils.data.DataLoader(dataset=test_split, batch_size=best_pa
 
 training_loss_per_epoch = model_manager.train(train_loader, best_parameters_overall[2], best_parameters_overall[0],
                                               final_training=True)
+print("training_loss_per_epoch_2: ")
 print(training_loss_per_epoch)
 print('Finished Training')
 

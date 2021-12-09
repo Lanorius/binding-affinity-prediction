@@ -78,6 +78,7 @@ class Trainer:
         of this function
         '''
 
+        print("training_loss_per_epoch_1: ")
         print(loss_per_epoch)
         return loss_per_epoch
 
@@ -90,9 +91,10 @@ class Tester:
     def _collect_predictions_and_labels(self, model, protein_compound, labels, name_pairs, all_labels, all_predicted,
                                         all_name_pairs, i):
         outputs = model(protein_compound)[i].double().to(self.device)
-
+        # print(protein_compound)
         outputs = outputs.tolist()
         outputs = [j[0] for j in outputs]
+        # print(sum(outputs))  # TODO: find out why this sometimes becomes zeroes, and why everything afterwards is zero
         outputs = torch.tensor(outputs, dtype=torch.float64)
         all_labels += labels.tolist()
         all_predicted += outputs.tolist()
@@ -114,7 +116,6 @@ class Tester:
                                                      all_regression_labels, all_regression_predicted, all_name_pairs, 0)
                 #  self._collect_predictions_and_labels(model, protein_compound, class_labels, all_binary_labels,
                 #                                     all_binary_predicted, 1)
-
         if bootstrap:
             return bootstrap_stats(all_regression_predicted, all_regression_labels, data_used)
                    #bootstrap_stats(all_binary_predicted, all_binary_labels, data_used)
@@ -130,8 +131,8 @@ class Tester:
                              plot_name='hist_after_prediction_'+data_used[0]+"_"+self.timestamp+".png")
 
         else:
-            print(all_regression_labels)
-            print(all_regression_predicted)
+            # print(all_regression_labels)
+            # print(all_regression_predicted)
             return emetrics.get_r2m(all_regression_labels, all_regression_predicted)
                    #emetrics.get_r2m(all_binary_labels, all_binary_predicted)
 

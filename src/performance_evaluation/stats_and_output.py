@@ -17,8 +17,8 @@ def pltcolor(lst):
 
 
 def print_loss_per_epoch(validation_loss_vector, training_loss_vector, data_used, timestamp):
-    print(validation_loss_vector)
-    print(training_loss_vector)
+    # print(validation_loss_vector)
+    # print(training_loss_vector)
     plt.clf()
     x = np.arange(len(validation_loss_vector))
     ax = plt.subplot(111)
@@ -32,7 +32,7 @@ def print_loss_per_epoch(validation_loss_vector, training_loss_vector, data_used
 
 
 def plot_output(predicted, labels, data_used, timestamp, cols='cornflowerblue', plot_name="scatterplot.png"):
-
+    plt.clf()
     plt.scatter(predicted, labels, alpha=0.2, color=cols, edgecolors="black")
 
     if data_used[0] == "pkd":
@@ -66,8 +66,8 @@ def plot_output_hist(predicted, timestamp, plot_name):
 
 
 # TODO: Remove after fixing dependencies
-def only_r2m(all_predicted, all_labels):
-    return emetrics.get_r2m(all_labels, all_predicted)
+# def only_r2m(all_predicted, all_labels):
+#    return emetrics.get_r2m(all_labels, all_predicted)
 
 
 def bootstrap_stats(all_predicted, all_labels, data_used):

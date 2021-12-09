@@ -60,7 +60,7 @@ def r_squared_error(y_obs,y_pred):
 def get_k(y_obs, y_pred):
     y_obs = np.array(y_obs)
     y_pred = np.array(y_pred)
-    print(y_pred)
+
     return sum(y_obs*y_pred) / float(sum(y_pred*y_pred))
 
 
