@@ -52,15 +52,15 @@ def r_squared_error(y_obs,y_pred):
     mult = mult * mult
 
     y_obs_sq = sum((y_obs - y_obs_mean)*(y_obs - y_obs_mean))
-    y_pred_sq = sum((y_pred - y_pred_mean) * (y_pred - y_pred_mean) )
+    y_pred_sq = sum((y_pred - y_pred_mean) * (y_pred - y_pred_mean))
 
     return mult / float(y_obs_sq * y_pred_sq)
 
 
-def get_k(y_obs,y_pred):
+def get_k(y_obs, y_pred):
     y_obs = np.array(y_obs)
     y_pred = np.array(y_pred)
-
+    print(y_pred)
     return sum(y_obs*y_pred) / float(sum(y_pred*y_pred))
 
 
@@ -91,7 +91,7 @@ def compute_aupr(all_targets, all_predictions, data_used):
         all_targets = [0 if n < 12.1 else 1 for n in all_targets]
         all_predictions = [0 if n < 12.1 else 1 for n in all_predictions]
     else:
-        print("The statistic needs to be implemented.")
+        raise "unknown affinity values were used"
     precision, recall, thresholds = precision_recall_curve(all_targets, all_predictions)
     aupr = metrics.auc(recall, precision)
     return aupr

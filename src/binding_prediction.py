@@ -183,7 +183,7 @@ model_manager.save_model(os.path.join("../Results/Results_"+timestamp+"/model_"+
 model.load_state_dict(torch.load(os.path.join("../Results/Results_"+timestamp+"/model_" +
                                               data_used[0]+"_"+timestamp+'.pth')))
 
-print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0], timestamp)
+print_loss_per_epoch(best_loss_per_epoch, best_loss_per_epoch, data_used[0], timestamp)
 
 #######################################################################################################################
 # testing

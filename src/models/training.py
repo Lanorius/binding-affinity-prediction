@@ -130,8 +130,10 @@ class Tester:
                              plot_name='hist_after_prediction_'+data_used[0]+"_"+self.timestamp+".png")
 
         else:
-            return only_r2m(all_regression_predicted, all_regression_labels)
-                   #only_r2m(all_binary_predicted, all_binary_labels)
+            print(all_regression_labels)
+            print(all_regression_predicted)
+            return emetrics.get_r2m(all_regression_labels, all_regression_predicted)
+                   #emetrics.get_r2m(all_binary_labels, all_binary_predicted)
 
         if nr_of_hard_samples > 0:
             find_hardest_samples(all_regression_predicted, all_regression_labels, all_name_pairs, nr_of_hard_samples)

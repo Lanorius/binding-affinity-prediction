@@ -16,18 +16,6 @@ def pltcolor(lst):
     return colors
 
 
-'''
-def print_loss_per_batch(loss_vector_batch, data_used, timestamp):
-    print(loss_vector_batch)
-    plt.plot(loss_vector_batch)
-    plt.title("Loss over Batch")
-    plt.xlabel("Batch")
-    plt.ylabel("Loss")
-    plt.savefig("../Results/Results_"+timestamp+"/loss_over_batch_"+data_used+"_"+timestamp+".png")
-'''
-# TODO: check if obsolete
-
-
 def print_loss_per_epoch(validation_loss_vector, training_loss_vector, data_used, timestamp):
     print(validation_loss_vector)
     print(training_loss_vector)
@@ -77,6 +65,7 @@ def plot_output_hist(predicted, timestamp, plot_name):
             g.write("\n")
 
 
+# TODO: Remove after fixing dependencies
 def only_r2m(all_predicted, all_labels):
     return emetrics.get_r2m(all_labels, all_predicted)
 
