@@ -1,0 +1,42 @@
+Sender: LSF System <lsfadmin@lsf-server-3.rostclust>
+Subject: Job 13095: <dg_prediction_pkd_d08_p08> in cluster <rost_lsf_cluster_1> Exited
+
+Job <dg_prediction_pkd_d08_p08> was submitted from host <lsf-master-1.rostclust> by user <giessing> in cluster <rost_lsf_cluster_1> at Fri Dec 10 09:41:59 2021
+Job was executed on host(s) <lsf-server-3.rostclust>, in queue <low-end-normal>, as user <giessing> in cluster <rost_lsf_cluster_1> at Fri Dec 10 09:42:01 2021
+</mnt/home/giessing> was used as the home directory.
+</mnt/project/protdrugaffinity/dg/binding-affinity-prediction/src> was used as the working directory.
+Started at Fri Dec 10 09:42:01 2021
+Terminated at Fri Dec 10 09:43:43 2021
+Results reported at Fri Dec 10 09:43:43 2021
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python binding_prediction.py
+------------------------------------------------------------
+
+Exited with exit code 1.
+
+Resource usage summary:
+
+    CPU time :                                   34.81 sec.
+    Max Memory :                                 249 MB
+    Average Memory :                             114.18 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                19
+    Run time :                                   102 sec.
+    Turnaround time :                            104 sec.
+
+The output (if any) follows:
+
+(['pkd', 'Davis'], 'RDKit', <Section: INPUT FILES>, True, 1, True, True)
+
+
+PS:
+
+Read file <stderr_pkd_d08_p08.log> for stderr output of this job.
+

@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/mnt/project/protdrugaffinity/dg/binding-affinity-prediction/src/binding_prediction.py", line 80, in <module>
+    os.mkdir("../Results/Results_"+timestamp)
+FileNotFoundError: [Errno 2] No such file or directory: '../Results/Results_Dec-10-2021_0943'
