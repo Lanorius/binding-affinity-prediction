@@ -1,8 +1,6 @@
 import torch
 import torch.optim as optim
 from sklearn.model_selection import train_test_split
-import numpy as np
-import statistics
 
 from data_loading.process_inputs import parse_config
 from data_loading.Dataset import Dataset
@@ -39,7 +37,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #######################################################################################################################
 # parameters and hyper parameters
 
-true_run = False  # if False a dummy run to observe bugs is started
+true_run = True  # if False a dummy run to observe bugs is started
 
 if true_run:
     number_of_random_draws = 10
@@ -48,8 +46,8 @@ else:
 
 batch_sizes = list(range(10, 1024, 5))
 #  batch_sizes = list(range(10, 2048, 5))
-learning_rates = [0.01, 0.001, 0.0001]
-#  learning_rates = list(np.arange(0.0001, 0.01, 0.0001))  # TODO: sometimes causes errors
+#  learning_rates = [0.01, 0.001, 0.0001]
+learning_rates = list(np.arange(0.0001, 0.01, 0.0001))
 
 if true_run:
     numbers_of_epochs = list(range(100, 301))
@@ -137,6 +135,7 @@ for test_train_index in tqdm(range(number_of_splits)):
             current_best_r2m = performance_regression
             best_loss_per_epoch = new_loss_per_epoch
             best_parameters_overall = [batch_size, learning_rate, number_of_epochs]
+        # TODO: better alternative for deciding which model was best
         '''
         if len(best_loss_per_epoch) == 0 or (statistics.mean(new_loss_per_epoch[-50:]) < (statistics.mean(
                 best_loss_per_epoch[-50:]))):
@@ -173,8 +172,6 @@ test_loader = torch.utils.data.DataLoader(dataset=test_split, batch_size=best_pa
 
 training_loss_per_epoch = model_manager.train(train_loader, best_parameters_overall[2], best_parameters_overall[0],
                                               final_training=True)
-print("training_loss_per_epoch_2: ")
-print(training_loss_per_epoch)
 print('Finished Training')
 
 
@@ -183,7 +180,7 @@ model_manager.save_model(os.path.join("../Results/Results_"+timestamp+"/model_"+
 model.load_state_dict(torch.load(os.path.join("../Results/Results_"+timestamp+"/model_" +
                                               data_used[0]+"_"+timestamp+'.pth')))
 
-print_loss_per_epoch(best_loss_per_epoch, best_loss_per_epoch, data_used[0], timestamp)
+print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0], timestamp)
 
 #######################################################################################################################
 # testing

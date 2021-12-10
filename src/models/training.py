@@ -60,26 +60,7 @@ class Trainer:
             # print('[%d, %5d] loss: %.7f' % (epoch_index + 1, i + 1, running_loss / batch_size))
             if final_training:
                 print('[%d] loss: %.7f' % (epoch_index + 1, running_loss / batch_size))
-            # print(running_loss/batch_size)
 
-            '''
-            #  this requires an overhaul, since it often produces empty plots, or it might just be removed
-            if i % batch_size == (batch_size - 1):  # print every n mini-batches
-                print('[%d, %5d] loss: %.7f' % (epoch_index + 1, i + 1, running_loss / batch_size))
-                all_losses += [running_loss / batch_size]
-                print("batch_size: "+str(batch_size))
-                print("len_all_losses: "+str(len(all_losses)))
-                running_loss = 0.0
-            '''
-
-        '''
-        print_loss_per_batch(all_losses, self.data_used, self.timestamp)  # overhaul or remove
-        print_loss_per_epoch(loss_per_epoch, self.data_used, self.timestamp)  # all of this should be moved outside
-        of this function
-        '''
-
-        print("training_loss_per_epoch_1: ")
-        print(loss_per_epoch)
         return loss_per_epoch
 
 
@@ -94,7 +75,7 @@ class Tester:
         # print(protein_compound)
         outputs = outputs.tolist()
         outputs = [j[0] for j in outputs]
-        # print(sum(outputs))  # TODO: find out why this sometimes becomes zeroes, and why everything afterwards is zero
+        # print(sum(outputs))  # TODO: find out why this sometimes becomes zeroes
         outputs = torch.tensor(outputs, dtype=torch.float64)
         all_labels += labels.tolist()
         all_predicted += outputs.tolist()
@@ -147,7 +128,8 @@ class ModelManager:
         self.tester = tester
 
     def train(self, data_for_training, amount_of_epochs, batch_size, final_training):
-        self.trainer.train(self.model, data_for_training, amount_of_epochs, batch_size, final_training)
+        loss_per_epoch = self.trainer.train(self.model, data_for_training, amount_of_epochs, batch_size, final_training)
+        return loss_per_epoch
 
     def test(self, data_for_testing, data_used, final_prediction=False, bootstrap=False):
         return self.tester.test(self.model, data_for_testing, data_used, final_prediction, bootstrap)
