@@ -143,7 +143,7 @@ for test_train_index in tqdm(range(number_of_splits)):
             best_parameters_overall = [batch_size, learning_rate, number_of_epochs]
         '''
         # print(performance_regression)
-        # print(best_parameters_overall)
+        print(best_parameters_overall)
 
 print('Finished Tuning')
 print(current_best_r2m)
