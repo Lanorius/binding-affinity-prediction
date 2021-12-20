@@ -1,14 +1,0 @@
-  0%|          | 0/5 [00:00<?, ?it/s]
-  0%|          | 0/10 [00:00<?, ?it/s][A
- 10%|█         | 1/10 [26:46<4:00:56, 1606.32s/it][A 10%|█         | 1/10 [43:59<6:35:55, 2639.45s/it]
-  0%|          | 0/5 [43:59<?, ?it/s]
-Traceback (most recent call last):
-  File "/mnt/project/protdrugaffinity/dg/binding-affinity-prediction/src/binding_prediction.py", line 128, in <module>
-    new_loss_per_epoch = trainer.train(model, training_sets[test_train_index], number_of_epochs, batch_size,
-  File "/mnt/project/protdrugaffinity/dg/binding-affinity-prediction/src/models/training.py", line 55, in train
-    total_loss.backward()
-  File "/mnt/lsf-nas-1/os-shared/anaconda3/envs/daniel/lib/python3.9/site-packages/torch/tensor.py", line 221, in backward
-    torch.autograd.backward(self, gradient, retain_graph, create_graph)
-  File "/mnt/lsf-nas-1/os-shared/anaconda3/envs/daniel/lib/python3.9/site-packages/torch/autograd/__init__.py", line 130, in backward
-    Variable._execution_engine.run_backward(
-KeyboardInterrupt
