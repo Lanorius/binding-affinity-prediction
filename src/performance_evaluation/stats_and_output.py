@@ -17,6 +17,13 @@ def pltcolor(lst):
 
 
 def print_loss_per_epoch(validation_loss_vector, training_loss_vector, data_used, timestamp):
+    with open(os.path.join("../Results/Results_" + timestamp + "/", "losses.txt"), "w") as g:
+        for s in validation_loss_vector:
+            g.write(str(s) + " ")
+        g.write("\n")
+        for s in training_loss_vector:
+            g.write(str(s) + " ")
+        g.close()
     # print(validation_loss_vector)
     # print(training_loss_vector)
     validation_loss_vector = validation_loss_vector[1:]
@@ -65,7 +72,7 @@ def plot_output_hist(predicted, timestamp, plot_name):
         for s in predicted:
             g.write(str(s) + " ")
             g.write("\n")
-
+    g.close()
 
 # TODO: Remove after fixing dependencies
 # def only_r2m(all_predicted, all_labels):
