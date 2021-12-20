@@ -1,0 +1,42 @@
+Sender: LSF System <lsfadmin@lsf-server-3.rostclust>
+Subject: Job 13217: <dg_prediction_davis_shuff> in cluster <rost_lsf_cluster_1> Exited
+
+Job <dg_prediction_davis_shuff> was submitted from host <lsf-master-1.rostclust> by user <giessing> in cluster <rost_lsf_cluster_1> at Mon Dec 20 08:27:17 2021
+Job was executed on host(s) <lsf-server-3.rostclust>, in queue <low-end-normal>, as user <giessing> in cluster <rost_lsf_cluster_1> at Mon Dec 20 09:09:32 2021
+</mnt/home/giessing> was used as the home directory.
+</mnt/project/protdrugaffinity/dg/binding-affinity-prediction/src> was used as the working directory.
+Started at Mon Dec 20 09:09:32 2021
+Terminated at Mon Dec 20 09:09:43 2021
+Results reported at Mon Dec 20 09:09:43 2021
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python binding_prediction.py
+------------------------------------------------------------
+
+TERM_OWNER: job killed by owner.
+Exited with exit code 143.
+
+Resource usage summary:
+
+    CPU time :                                   2.98 sec.
+    Max Memory :                                 77 MB
+    Average Memory :                             55.50 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                18
+    Run time :                                   10 sec.
+    Turnaround time :                            2546 sec.
+
+The output (if any) follows:
+
+
+
+PS:
+
+Read file <stderr_davis_shuff.log> for stderr output of this job.
+
