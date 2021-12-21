@@ -1,8 +1,8 @@
 # For more options, check out:
 # https://www.ibm.com/support/knowledgecenter/en/SSWRJV_10.1.0/lsf_command_ref/bsub.yaml.1.html
 io: 
-    outputOverwriteFile: stdout_davis_shuff.log
-    errorOverwriteFile: stderr_davis_shuff.log
+    outputOverwriteFile: stdout_davis_unshuff.log
+    errorOverwriteFile: stderr_davis_unshuff.log
 limit: 
     coreLimit: 20
     # in hh:mm
@@ -45,6 +45,6 @@ resource:
 
 properties:
     queueName: low-end-normal
-    jobName: dg_prediction_davis_shuff
+    jobName: dg_prediction_davis_unshuff
 command: python binding_prediction.py
 
