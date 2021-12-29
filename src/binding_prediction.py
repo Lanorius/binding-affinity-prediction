@@ -79,7 +79,7 @@ t = time.localtime()
 timestamp = time.strftime('%b-%d-%Y_%H%M', t)
 os.mkdir("../Results/Results_"+timestamp)
 
-
+'''
 best_parameters_overall = [0, 0, 0]
 current_best_r2m = 0
 
@@ -136,21 +136,21 @@ for test_train_index in tqdm(range(number_of_splits)):
             best_loss_per_epoch = new_loss_per_epoch
             best_parameters_overall = [batch_size, learning_rate, number_of_epochs]
         # TODO: better alternative for deciding which model was best
-        '''
-        if len(best_loss_per_epoch) == 0 or (statistics.mean(new_loss_per_epoch[-50:]) < (statistics.mean(
-                best_loss_per_epoch[-50:]))):
-            best_loss_per_epoch = new_loss_per_epoch
-            best_parameters_overall = [batch_size, learning_rate, number_of_epochs]
-        '''
+        # if len(best_loss_per_epoch) == 0 or (statistics.mean(new_loss_per_epoch[-50:]) < (statistics.mean(
+        #        best_loss_per_epoch[-50:]))):
+        #    best_loss_per_epoch = new_loss_per_epoch
+        #    best_parameters_overall = [batch_size, learning_rate, number_of_epochs]
         # print(performance_regression)
         print(best_parameters_overall)
 
 print('Finished Tuning')
 print(current_best_r2m)
 print(best_parameters_overall)
-
+'''
 #######################################################################################################################
 # training
+
+best_parameters_overall = [256, 0.005, 200]
 
 if use_model == "chemVAE":
     model = PcNet()
@@ -180,7 +180,7 @@ model_manager.save_model(os.path.join("../Results/Results_"+timestamp+"/model_"+
 model.load_state_dict(torch.load(os.path.join("../Results/Results_"+timestamp+"/model_" +
                                               data_used[0]+"_"+timestamp+'.pth')))
 
-print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0], timestamp)
+# print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0], timestamp) # TODO: keep that
 
 #######################################################################################################################
 # testing
@@ -188,5 +188,5 @@ print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0],
 calculate_standard_error_by_bootstrapping(model_manager, test_loader, test_split, best_parameters_overall[0], data_used,
                                           timestamp)
 
-print("Best r2m was: ", current_best_r2m)
+# print("Best r2m was: ", current_best_r2m) # TODO: keep that
 print("Best parameters were:", best_parameters_overall)
