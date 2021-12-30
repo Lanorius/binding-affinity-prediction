@@ -46,8 +46,8 @@ else:
 
 batch_sizes = list(range(10, 1024, 5))
 #  batch_sizes = list(range(10, 2048, 5))
-#  learning_rates = [0.01, 0.001, 0.0001]
-learning_rates = list(np.arange(0.0001, 0.01, 0.0001))
+learning_rates = [0.01, 0.001, 0.0001]
+#  learning_rates = list(np.arange(0.0001, 0.01, 0.0001))
 
 if true_run:
     numbers_of_epochs = list(range(100, 301))
@@ -79,7 +79,7 @@ t = time.localtime()
 timestamp = time.strftime('%b-%d-%Y_%H%M', t)
 os.mkdir("../Results/Results_"+timestamp)
 
-'''
+
 best_parameters_overall = [0, 0, 0]
 current_best_r2m = 0
 
@@ -146,11 +146,11 @@ for test_train_index in tqdm(range(number_of_splits)):
 print('Finished Tuning')
 print(current_best_r2m)
 print(best_parameters_overall)
-'''
+
 #######################################################################################################################
 # training
 
-best_parameters_overall = [256, 0.005, 200]
+# best_parameters_overall = [256, 0.005, 200]
 
 if use_model == "chemVAE":
     model = PcNet()
@@ -180,7 +180,7 @@ model_manager.save_model(os.path.join("../Results/Results_"+timestamp+"/model_"+
 model.load_state_dict(torch.load(os.path.join("../Results/Results_"+timestamp+"/model_" +
                                               data_used[0]+"_"+timestamp+'.pth')))
 
-# print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0], timestamp) # TODO: keep that
+print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0], timestamp)  # TODO: keep that
 
 #######################################################################################################################
 # testing
@@ -188,5 +188,5 @@ model.load_state_dict(torch.load(os.path.join("../Results/Results_"+timestamp+"/
 calculate_standard_error_by_bootstrapping(model_manager, test_loader, test_split, best_parameters_overall[0], data_used,
                                           timestamp)
 
-# print("Best r2m was: ", current_best_r2m) # TODO: keep that
+print("Best r2m was: ", current_best_r2m) # TODO: keep that
 print("Best parameters were:", best_parameters_overall)
