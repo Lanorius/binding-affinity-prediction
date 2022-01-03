@@ -37,10 +37,12 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #######################################################################################################################
 # parameters and hyper parameters
 
+# parameters for improving the code
 true_run = True  # if False a dummy run to observe bugs is started
+overtrain = True  # adds 100 epochs to validation and training
 
 if true_run:
-    number_of_random_draws = 20  #
+    number_of_random_draws = 10
 else:
     number_of_random_draws = 2
 
@@ -79,7 +81,7 @@ t = time.localtime()
 timestamp = time.strftime('%b-%d-%Y_%H%M', t)
 os.mkdir("../Results/Results_"+timestamp)
 
-
+'''
 best_parameters_overall = [0, 0, 0]
 current_best_r2m = 0
 
@@ -146,11 +148,14 @@ for test_train_index in tqdm(range(number_of_splits)):
 print('Finished Tuning')
 print(current_best_r2m)
 print(best_parameters_overall)
-
+'''
 #######################################################################################################################
 # training
 
-# best_parameters_overall = [190, 0.0001, 10]
+best_parameters_overall = [190, 0.0001, 295]
+
+if overtrain == True:
+    best_parameters_overall[2] += 100
 
 if use_model == "chemVAE":
     model = PcNet()
@@ -180,7 +185,7 @@ model_manager.save_model(os.path.join("../Results/Results_"+timestamp+"/model_"+
 model.load_state_dict(torch.load(os.path.join("../Results/Results_"+timestamp+"/model_" +
                                               data_used[0]+"_"+timestamp+'.pth')))
 
-print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0], timestamp)
+#print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0], timestamp)
 # TODO: remove comment for true run
 
 #######################################################################################################################
@@ -189,6 +194,6 @@ print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0],
 run_test_and_calculate_standard_error_by_bootstrapping(model_manager, test_loader, test_split,
                                                        best_parameters_overall, data_used, timestamp)
 
-print("Best r2m was: ", current_best_r2m)
+#print("Best r2m was: ", current_best_r2m)
 # TODO: remove comment for true run
 print("Best parameters were:", best_parameters_overall)
