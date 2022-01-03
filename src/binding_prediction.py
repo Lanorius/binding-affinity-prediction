@@ -6,7 +6,7 @@ from data_loading.process_inputs import parse_config
 from data_loading.Dataset import Dataset
 from models.neural_net import PcNet, PcNet_chemBERTa, PcNet_RDKit  # , EmbeddingReducingNN
 from models.training import Trainer, Tester, ModelManager
-from performance_evaluation.standard_error_computation import calculate_standard_error_by_bootstrapping
+from performance_evaluation.standard_error_computation import run_test_and_calculate_standard_error_by_bootstrapping
 from performance_evaluation.stats_and_output import *
 
 import random
@@ -40,11 +40,11 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 true_run = True  # if False a dummy run to observe bugs is started
 
 if true_run:
-    number_of_random_draws = 10
+    number_of_random_draws = 20  #
 else:
     number_of_random_draws = 2
 
-batch_sizes = list(range(10, 1024, 5))
+batch_sizes = list(range(10, 256, 5))
 #  batch_sizes = list(range(10, 2048, 5))
 learning_rates = [0.01, 0.001, 0.0001]
 #  learning_rates = list(np.arange(0.0001, 0.01, 0.0001))
@@ -150,7 +150,7 @@ print(best_parameters_overall)
 #######################################################################################################################
 # training
 
-# best_parameters_overall = [256, 0.005, 200]
+# best_parameters_overall = [190, 0.0001, 10]
 
 if use_model == "chemVAE":
     model = PcNet()
@@ -180,13 +180,15 @@ model_manager.save_model(os.path.join("../Results/Results_"+timestamp+"/model_"+
 model.load_state_dict(torch.load(os.path.join("../Results/Results_"+timestamp+"/model_" +
                                               data_used[0]+"_"+timestamp+'.pth')))
 
-print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0], timestamp)  # TODO: keep that
+print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0], timestamp)
+# TODO: remove comment for true run
 
 #######################################################################################################################
 # testing
 
-calculate_standard_error_by_bootstrapping(model_manager, test_loader, test_split, best_parameters_overall[0], data_used,
-                                          timestamp)
+run_test_and_calculate_standard_error_by_bootstrapping(model_manager, test_loader, test_split,
+                                                       best_parameters_overall, data_used, timestamp)
 
-print("Best r2m was: ", current_best_r2m) # TODO: keep that
+print("Best r2m was: ", current_best_r2m)
+# TODO: remove comment for true run
 print("Best parameters were:", best_parameters_overall)

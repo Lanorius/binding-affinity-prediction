@@ -82,7 +82,8 @@ class Tester:
         for i in range(len(name_pairs[0])):
             all_name_pairs.append((name_pairs[0][i], name_pairs[1][i]))
 
-    def test(self, model, data_for_testing, data_used, final_prediction=False, bootstrap=False, nr_of_hard_samples=1):
+    def test(self, model, data_for_testing, data_used, best_parameters_overall, final_prediction=False, bootstrap=False,
+             nr_of_hard_samples=1):
         all_regression_labels = []
         all_regression_predicted = []
         all_name_pairs = []
@@ -105,7 +106,8 @@ class Tester:
             plot_output(all_regression_predicted, all_regression_labels, data_used, self.timestamp,
                         plot_name='scatter_plot_regression_'+data_used[0]+"_"+self.timestamp+".png")
             #  plot_output(all_binary_predicted, all_binary_labels, data_used, plot_name='scatter_plot_classes.png')
-            print_stats(all_regression_predicted, all_regression_labels, data_used, self.timestamp)
+            print_stats(all_regression_predicted, all_regression_labels, data_used, best_parameters_overall,
+                        self.timestamp)
             #  print_stats(all_binary_predicted, all_binary_labels, data_used)
 
             plot_output_hist(all_regression_predicted, self.timestamp,
@@ -131,8 +133,9 @@ class ModelManager:
         loss_per_epoch = self.trainer.train(self.model, data_for_training, amount_of_epochs, batch_size, final_training)
         return loss_per_epoch
 
-    def test(self, data_for_testing, data_used, final_prediction=False, bootstrap=False):
-        return self.tester.test(self.model, data_for_testing, data_used, final_prediction, bootstrap)
+    def test(self, data_for_testing, data_used, best_parameters_overall, final_prediction=False, bootstrap=False):
+        return self.tester.test(self.model, data_for_testing, data_used, best_parameters_overall, final_prediction,
+                                bootstrap)
 
     def save_model(self, file_path):
         self.model.save(file_path)

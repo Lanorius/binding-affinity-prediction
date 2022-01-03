@@ -88,7 +88,7 @@ def bootstrap_stats(all_predicted, all_labels, data_used):
     return [r2m, aupr, ci, mse]
 
 
-def print_stats(all_predicted, all_labels, data_used, timestamp):
+def print_stats(all_predicted, all_labels, data_used, best_parameters_overall, timestamp):
     r2m = emetrics.get_r2m(all_labels, all_predicted)
     aupr = emetrics.compute_aupr(all_labels, all_predicted, data_used[0])
     ci = lifelines.utils.concordance_index(all_labels, all_predicted)
@@ -107,6 +107,7 @@ def print_stats(all_predicted, all_labels, data_used, timestamp):
     file1.write("The AUPR for this run is: "+str(round(aupr, 3))+"\n")
     file1.write("The Concordance Index (CI) for this run is: "+str(round(ci, 3))+"\n")
     file1.write("The Mean Squared Error (MSE) for this run is: "+str(round(mse, 3))+"\n")
+    file1.write("The best parameters for this run were: "+str(best_parameters_overall)+"\n")
     file1.close()
 
 
