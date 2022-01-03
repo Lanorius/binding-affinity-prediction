@@ -39,7 +39,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # parameters for improving the code
 true_run = True  # if False a dummy run to observe bugs is started
-overtrain = True  # adds 100 epochs to validation and training
+overtrain = False  # adds 100 epochs to validation and training
 
 if true_run:
     number_of_random_draws = 10
@@ -81,7 +81,7 @@ t = time.localtime()
 timestamp = time.strftime('%b-%d-%Y_%H%M', t)
 os.mkdir("../Results/Results_"+timestamp)
 
-'''
+
 best_parameters_overall = [0, 0, 0]
 current_best_r2m = 0
 
@@ -148,11 +148,11 @@ for test_train_index in tqdm(range(number_of_splits)):
 print('Finished Tuning')
 print(current_best_r2m)
 print(best_parameters_overall)
-'''
+
 #######################################################################################################################
 # training
 
-best_parameters_overall = [190, 0.0001, 295]
+# best_parameters_overall = [190, 0.0001, 295]
 
 if overtrain == True:
     best_parameters_overall[2] += 100
