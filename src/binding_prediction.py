@@ -38,7 +38,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # parameters and hyper parameters
 
 # parameters for improving the code
-true_run = True  # if False a dummy run to observe bugs is started
+true_run = False  # if False a dummy run to observe bugs is started
 overtrain = False  # adds 100 epochs to validation and training
 
 if true_run:
@@ -129,15 +129,16 @@ for test_train_index in tqdm(range(number_of_splits)):
 
         new_loss_per_epoch = trainer.train(model, training_sets[test_train_index], number_of_epochs, batch_size,
                                            final_training=False)
-        # losses_per_epoch += [new_loss_per_epoch]  # TODO: keeping all loses per epoch might be useful
+        # losses_per_epoch += [new_loss_per_epoch]  # TODO: maybe keeping all loses per epoch is useful
 
         # uses r2m as cutoff for best parameters
-        performance_regression = tester.test(model, validation_set_[test_train_index], data_used)
+        performance_regression = tester.test(model, validation_set_[test_train_index], data_used, [0, 0, 0])
+        # best parameters are not used here therefore the last parameter is just zeroes
         if performance_regression > current_best_r2m:
             current_best_r2m = performance_regression
             best_loss_per_epoch = new_loss_per_epoch
             best_parameters_overall = [batch_size, learning_rate, number_of_epochs]
-        # TODO: better alternative for deciding which model was best
+        # TODO: maybe find an alternative for deciding which model was best
         # if len(best_loss_per_epoch) == 0 or (statistics.mean(new_loss_per_epoch[-50:]) < (statistics.mean(
         #        best_loss_per_epoch[-50:]))):
         #    best_loss_per_epoch = new_loss_per_epoch
