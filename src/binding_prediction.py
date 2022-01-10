@@ -38,7 +38,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # parameters and hyper parameters
 
 # parameters for improving the code
-true_run = False  # if False a dummy run to observe bugs is started
+true_run = True  # if False a dummy run to observe bugs is started
 overtrain = False  # adds 100 epochs to validation and training
 
 if true_run:
