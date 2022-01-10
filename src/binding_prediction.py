@@ -42,7 +42,7 @@ true_run = True  # if False a dummy run to observe bugs is started
 overtrain = False  # adds 100 epochs to validation and training
 
 if true_run:
-    number_of_random_draws = 10
+    number_of_random_draws = 1  # TODO: if not 10 turn to 10
 else:
     number_of_random_draws = 2
 
@@ -83,6 +83,7 @@ os.mkdir("../Results/Results_"+timestamp)
 
 
 best_parameters_overall = [0, 0, 0]
+
 current_best_r2m = 0
 
 losses_per_epoch = []
@@ -103,9 +104,14 @@ for test_train_index in tqdm(range(number_of_splits)):
             raise Exception("Model is undefined.")
         # model = EmbeddingReducingNN()
 
-        batch_size = random.choice(batch_sizes)
-        learning_rate = random.choice(learning_rates)
-        number_of_epochs = random.choice(numbers_of_epochs)
+        #batch_size = random.choice(batch_sizes)
+        #learning_rate = random.choice(learning_rates)
+        #number_of_epochs = random.choice(numbers_of_epochs)
+
+        # TODO: remove experiment
+        batch_size = 235
+        learning_rate = 0.01
+        number_of_epochs = 196
 
         tester = Tester(device, timestamp)
         trainer = Trainer(device, optim.Adam(model.parameters(), lr=learning_rate), nr_prediction_classes,
@@ -155,7 +161,7 @@ print(best_parameters_overall)
 
 # best_parameters_overall = [190, 0.0001, 295]
 
-if overtrain == True:
+if overtrain:
     best_parameters_overall[2] += 100
 
 if use_model == "chemVAE":
@@ -176,17 +182,29 @@ train_loader = torch.utils.data.DataLoader(dataset=all_training_samples, batch_s
                                            shuffle=False)
 test_loader = torch.utils.data.DataLoader(dataset=test_split, batch_size=best_parameters_overall[0], shuffle=False)
 
-training_loss_per_epoch = model_manager.train(train_loader, best_parameters_overall[2], best_parameters_overall[0],
-                                              final_training=True)
-print('Finished Training')
+zeroes_predicted = True  # TODO: find a more elegant solution to prevent empty models, also this might not work.
+can_this_cause_an_endless_loop = 0
+training_loss_per_epoch = []
+while zeroes_predicted:
+    can_this_cause_an_endless_loop += 1
+    if can_this_cause_an_endless_loop > 5:
+        raise Exception("The model appears to predict zeroes after each new training.")
+    print("Training attempt No: "+str(can_this_cause_an_endless_loop))
+    training_loss_per_epoch = model_manager.train(train_loader, best_parameters_overall[2], best_parameters_overall[0],
+                                                  final_training=True)
+    if model_manager.test(test_loader, data_used, best_parameters_overall, prevent_zeroes=True):
+        zeroes_predicted = False
 
+print('Finished Training')
+if not training_loss_per_epoch:
+    raise Exception("Something went wrong. The training loss per epoch is empty.")
 
 model_manager.save_model(os.path.join("../Results/Results_"+timestamp+"/model_"+data_used[0]+"_"+timestamp+'.pth'))
 
 model.load_state_dict(torch.load(os.path.join("../Results/Results_"+timestamp+"/model_" +
                                               data_used[0]+"_"+timestamp+'.pth')))
 
-#print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0], timestamp)
+print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0], timestamp)
 # TODO: remove comment for true run
 
 #######################################################################################################################
@@ -195,6 +213,6 @@ model.load_state_dict(torch.load(os.path.join("../Results/Results_"+timestamp+"/
 run_test_and_calculate_standard_error_by_bootstrapping(model_manager, test_loader, test_split,
                                                        best_parameters_overall, data_used, timestamp)
 
-#print("Best r2m was: ", current_best_r2m)
+print("Best r2m was: ", current_best_r2m)
 # TODO: remove comment for true run
 print("Best parameters were:", best_parameters_overall)

@@ -71,6 +71,7 @@ class Tester:
 
     def _collect_predictions_and_labels(self, model, protein_compound, labels, name_pairs, all_labels, all_predicted,
                                         all_name_pairs, i):
+
         outputs = model(protein_compound)[i].double().to(self.device)
         # print(protein_compound)
         outputs = outputs.tolist()
@@ -83,7 +84,7 @@ class Tester:
             all_name_pairs.append((name_pairs[0][i], name_pairs[1][i]))
 
     def test(self, model, data_for_testing, data_used, best_parameters_overall, final_prediction=False, bootstrap=False,
-             nr_of_hard_samples=1):
+             nr_of_hard_samples=1, prevent_zeroes=False):
         all_regression_labels = []
         all_regression_predicted = []
         all_name_pairs = []
@@ -98,6 +99,12 @@ class Tester:
                                                      all_regression_labels, all_regression_predicted, all_name_pairs, 0)
                 #  self._collect_predictions_and_labels(model, protein_compound, class_labels, all_binary_labels,
                 #                                     all_binary_predicted, 1)
+        if prevent_zeroes:  # TODO: finding the cause of why some models only predict zeroes would be a better solution
+            if sum(all_regression_predicted) != 0:
+                return True
+            else:
+                return False
+
         if bootstrap:
             return bootstrap_stats(all_regression_predicted, all_regression_labels, data_used)
                    #bootstrap_stats(all_binary_predicted, all_binary_labels, data_used)
@@ -133,9 +140,10 @@ class ModelManager:
         loss_per_epoch = self.trainer.train(self.model, data_for_training, amount_of_epochs, batch_size, final_training)
         return loss_per_epoch
 
-    def test(self, data_for_testing, data_used, best_parameters_overall, final_prediction=False, bootstrap=False):
+    def test(self, data_for_testing, data_used, best_parameters_overall, final_prediction=False, bootstrap=False,
+             prevent_zeroes=False):
         return self.tester.test(self.model, data_for_testing, data_used, best_parameters_overall, final_prediction,
-                                bootstrap)
+                                bootstrap, prevent_zeroes)
 
     def save_model(self, file_path):
         self.model.save(file_path)
