@@ -109,9 +109,9 @@ for test_train_index in tqdm(range(number_of_splits)):
         #number_of_epochs = random.choice(numbers_of_epochs)
 
         # TODO: remove experiment
-        batch_size = 235
-        learning_rate = 0.01
-        number_of_epochs = 196
+        batch_size = 30
+        learning_rate = 0.001
+        number_of_epochs = 274
 
         tester = Tester(device, timestamp)
         trainer = Trainer(device, optim.Adam(model.parameters(), lr=learning_rate), nr_prediction_classes,
