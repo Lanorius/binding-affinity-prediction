@@ -36,3 +36,5 @@ def run_test_and_calculate_standard_error_by_bootstrapping(model_manager, test_l
     file1.write("AUPR std is: "+str(round(stdev(auprs), 3))+"\n")
     file1.write("CIs std is: "+str(round(stdev(cis), 3))+"\n")
     file1.close()
+
+    return 0
