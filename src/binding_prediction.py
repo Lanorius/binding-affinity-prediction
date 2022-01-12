@@ -103,11 +103,11 @@ for test_train_index in tqdm(range(number_of_splits)):
         else:
             raise Exception("Model is undefined.")
         # model = EmbeddingReducingNN()
-
-        #batch_size = random.choice(batch_sizes)
-        #learning_rate = random.choice(learning_rates)
-        #number_of_epochs = random.choice(numbers_of_epochs)
-
+        '''
+        batch_size = random.choice(batch_sizes)
+        learning_rate = random.choice(learning_rates)
+        number_of_epochs = random.choice(numbers_of_epochs)
+        '''
         # TODO: remove experiment
         batch_size = 30
         learning_rate = 0.001
