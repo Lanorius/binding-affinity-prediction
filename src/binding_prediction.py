@@ -8,6 +8,7 @@ from models.neural_net import PcNet, PcNet_chemBERTa, PcNet_RDKit  # , Embedding
 from models.training import Trainer, Tester, ModelManager
 from performance_evaluation.standard_error_computation import run_test_and_calculate_standard_error_by_bootstrapping
 from performance_evaluation.stats_and_output import *
+from ast import literal_eval
 
 import random
 from tqdm import tqdm
@@ -18,8 +19,8 @@ import time  # for timestamps to easily distinguish results
 #######################################################################################################################
 # ini file  Parser for dataset selection
 
-data_used, use_model, files, do_regression, nr_prediction_classes, shuffle_drugs, shuffle_targets = parse_config()
-print(parse_config())
+data_used, use_model, files, do_regression, nr_prediction_classes, shuffle_drugs, shuffle_targets, dummy_run, \
+overtrain, special_params = parse_config()
 
 data_set = Dataset(files['embeddings'],
                    files['compound_vectors'],
@@ -38,21 +39,26 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # parameters and hyper parameters
 
 # parameters for improving the code
-true_run = True  # if False a dummy run to observe bugs is started
-overtrain = False  # adds 100 epochs to validation and training
+# dummy_run: if True a dummy run to fix bugs is started
+# overtrain: adds 100 epochs to validation and training
+# and requires dummy_run = False, and existing hyper parameters from a previous run
 
-if true_run:
-    number_of_random_draws = 1  # TODO: if not 10 turn to 10
+
+if not dummy_run and not overtrain:
+    number_of_random_draws = 5
+elif not dummy_run and overtrain:
+    number_of_random_draws = 1  # since we still want the best validation loss for the plots
+elif dummy_run and overtrain:
+    raise Exception("Overtraining only works with dummy_run set to False.")
 else:
     number_of_random_draws = 2
 
-batch_sizes = list(range(10, 256, 5))
-#  batch_sizes = list(range(10, 2048, 5))
+batch_sizes = list(range(128, 256, 5))
 learning_rates = [0.01, 0.001, 0.0001]
 #  learning_rates = list(np.arange(0.0001, 0.01, 0.0001))
 
-if true_run:
-    numbers_of_epochs = list(range(100, 301))
+if not dummy_run:
+    numbers_of_epochs = list(range(150, 301))
 else:
     numbers_of_epochs = list(range(3, 6))
 
@@ -62,7 +68,7 @@ else:
 
 train_data_split = []
 
-if true_run:
+if not dummy_run:
     number_of_splits = 5  # three for training, one for validation, one for testing
 else:
     number_of_splits = 2
@@ -103,15 +109,15 @@ for test_train_index in tqdm(range(number_of_splits)):
         else:
             raise Exception("Model is undefined.")
         # model = EmbeddingReducingNN()
-        '''
-        batch_size = random.choice(batch_sizes)
-        learning_rate = random.choice(learning_rates)
-        number_of_epochs = random.choice(numbers_of_epochs)
-        '''
-        # TODO: remove experiment
-        batch_size = 30
-        learning_rate = 0.001
-        number_of_epochs = 274
+
+        if overtrain:
+            print(literal_eval(special_params['overtrain_params']))
+            batch_size, learning_rate, number_of_epochs = literal_eval(special_params['overtrain_params'])
+
+        else:
+            batch_size = random.choice(batch_sizes)
+            learning_rate = random.choice(learning_rates)
+            number_of_epochs = random.choice(numbers_of_epochs)
 
         tester = Tester(device, timestamp)
         trainer = Trainer(device, optim.Adam(model.parameters(), lr=learning_rate), nr_prediction_classes,
@@ -159,10 +165,10 @@ print(best_parameters_overall)
 #######################################################################################################################
 # training
 
-# best_parameters_overall = [190, 0.0001, 295]
-
+'''
 if overtrain:
     best_parameters_overall[2] += 100
+'''
 
 if use_model == "chemVAE":
     model = PcNet()

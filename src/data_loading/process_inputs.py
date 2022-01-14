@@ -7,8 +7,11 @@ def parse_config():
     config.read("config.ini")
     files = config["INPUT FILES"]
     general_setting = config["GENERAL"]
-    shuffle_drugs = config["SHUFFLE LABELS"].getboolean('shuffle_drugs')
-    shuffle_targets = config["SHUFFLE LABELS"].getboolean('shuffle_targets')
+    shuffle_drugs = config["SPECIAL TASKS"].getboolean('shuffle_drugs')
+    shuffle_targets = config["SPECIAL TASKS"].getboolean('shuffle_targets')
+    dummy_run = config["SPECIAL TASKS"].getboolean('dummy_run')
+    overtrain = config["SPECIAL TASKS"].getboolean('overtrain')
+    special_params = config["SPECIAL PARAMS"]
     prediction_types = config["PREDICTION TYPES"]
     do_regression = prediction_types.getboolean("regression")
     nr_of_classes = prediction_types.getint("nr_classes")
@@ -39,10 +42,11 @@ def parse_config():
         use_model = "chemBERTa"
     elif general_setting['compounds'] == 'RDKit':
         # for the chemBERTa vector
-        use_model = "RDKit"    
+        use_model = "RDKit"
 
     else:
         print("Invalid entry in config.ini for compounds in section GENERAL")
         sys.exit()
 
-    return data_used, use_model, files, do_regression, nr_of_classes, shuffle_drugs, shuffle_targets
+    return data_used, use_model, files, do_regression, nr_of_classes, shuffle_drugs, shuffle_targets, dummy_run, \
+           overtrain, special_params
