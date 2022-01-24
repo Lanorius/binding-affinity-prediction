@@ -30,38 +30,44 @@ class Trainer:
 
         return output_list
 
-    def train(self, model, data_for_training, number_of_epochs, batch_size, final_training):
-        all_losses = []
-        loss_per_epoch = []
+    def train(self, model, data_for_training, data_for_validating, number_of_epochs, batch_size, final_training):
+        training_loss_per_epoch = []
+        validation_loss_per_epoch = []
         for epoch_index in range(number_of_epochs):
 
-            running_loss = 0.0
-            for i, (protein_compounds, regression_label, class_label, _) in enumerate(data_for_training):
+            training_loss = 0.0
+            validation_loss = 0.0
+
+            for i, (protein_compounds, regression_label, _, _) in enumerate(data_for_training):
                 self.optimizer.zero_grad()
                 inputs = protein_compounds
                 regression_label = regression_label.unsqueeze(1).to(self.device).double()
-                class_label = class_label.unsqueeze(1).to(self.device)
                 regression_output, class_output = model(inputs)
-                loss1 = self.criterion0(regression_output.double().to(self.device), regression_label)
-                if self.nr_classes == 2:
-                    loss2 = self.criterion1(class_output.double().to(self.device), class_label)
-                else:
-                    #  predictions_second_loss =
-                    #  self._map_regression_list_to_classes(regression_output).double().to(self.device)
-                    class_label = self._map_regression_list_to_classes(regression_label).double().to(self.device)
-                    loss2 = self.criterion1(regression_output.double().to(self.device), class_label)
-                #  total_loss = loss1 + loss2
-                total_loss = loss1
+                loss = self.criterion0(regression_output.double().to(self.device), regression_label)
+                total_loss = loss
                 total_loss.backward()
                 self.optimizer.step()
-                running_loss += total_loss.item()
+                training_loss += total_loss.item()
 
-            loss_per_epoch += [running_loss/batch_size]
-            # print('[%d, %5d] loss: %.7f' % (epoch_index + 1, i + 1, running_loss / batch_size))
+            training_loss_per_epoch += [training_loss/batch_size]
+
+            for i, (protein_compounds, regression_label, _, _) in enumerate(data_for_validating):
+                # self.optimizer.zero_grad()
+                inputs = protein_compounds
+                regression_label = regression_label.unsqueeze(1).to(self.device).double()
+                regression_output, class_output = model(inputs)
+                loss = self.criterion0(regression_output.double().to(self.device), regression_label)
+                total_loss = loss
+                # total_loss.backward()
+                # self.optimizer.step()
+                validation_loss += total_loss.item()
+
+            validation_loss_per_epoch += [validation_loss / batch_size]
+
             if final_training:
-                print('[%d] loss: %.7f' % (epoch_index + 1, running_loss / batch_size))
+                print('[%d] loss: %.7f' % (epoch_index + 1, validation_loss / batch_size))
 
-        return loss_per_epoch
+        return training_loss_per_epoch, validation_loss_per_epoch
 
 
 class Tester:
@@ -84,7 +90,7 @@ class Tester:
             all_name_pairs.append((name_pairs[0][i], name_pairs[1][i]))
 
     def test(self, model, data_for_testing, data_used, best_parameters_overall, final_prediction=False, bootstrap=False,
-             nr_of_hard_samples=1, prevent_zeroes=False):
+             nr_of_hard_samples=1):
         all_regression_labels = []
         all_regression_predicted = []
         all_name_pairs = []
@@ -99,11 +105,6 @@ class Tester:
                                                      all_regression_labels, all_regression_predicted, all_name_pairs, 0)
                 #  self._collect_predictions_and_labels(model, protein_compound, class_labels, all_binary_labels,
                 #                                     all_binary_predicted, 1)
-        if prevent_zeroes:  # TODO: finding the cause of why some models only predict zeroes would be a better solution
-            if sum(all_regression_predicted) != 0:
-                return True
-            else:
-                return False
 
         if bootstrap:
             return bootstrap_stats(all_regression_predicted, all_regression_labels, data_used)
@@ -136,14 +137,14 @@ class ModelManager:
         self.trainer = trainer
         self.tester = tester
 
-    def train(self, data_for_training, amount_of_epochs, batch_size, final_training):
-        loss_per_epoch = self.trainer.train(self.model, data_for_training, amount_of_epochs, batch_size, final_training)
+    def train(self, data_for_training, data_for_testing, amount_of_epochs, batch_size, final_training):
+        loss_per_epoch = self.trainer.train(self.model, data_for_training, data_for_testing, amount_of_epochs,
+                                            batch_size, final_training)
         return loss_per_epoch
 
-    def test(self, data_for_testing, data_used, best_parameters_overall, final_prediction=False, bootstrap=False,
-             prevent_zeroes=False):
+    def test(self, data_for_testing, data_used, best_parameters_overall, final_prediction=False, bootstrap=False):
         return self.tester.test(self.model, data_for_testing, data_used, best_parameters_overall, final_prediction,
-                                bootstrap, prevent_zeroes)
+                                bootstrap)
 
     def save_model(self, file_path):
         self.model.save(file_path)
