@@ -7,6 +7,7 @@ def parse_config():
     config.read("config.ini")
     files = config["INPUT FILES"]
     general_setting = config["GENERAL"]
+    tasks = config["TASKS"]
     shuffle_drugs = config["SPECIAL TASKS"].getboolean('shuffle_drugs')
     shuffle_targets = config["SPECIAL TASKS"].getboolean('shuffle_targets')
     dummy_run = config["SPECIAL TASKS"].getboolean('dummy_run')
@@ -48,5 +49,5 @@ def parse_config():
         print("Invalid entry in config.ini for compounds in section GENERAL")
         sys.exit()
 
-    return data_used, use_model, files, do_regression, nr_of_classes, shuffle_drugs, shuffle_targets, dummy_run, \
-           overtrain, special_params
+    return data_used, use_model, files, do_regression, nr_of_classes, tasks, shuffle_drugs, shuffle_targets, \
+           dummy_run, overtrain, special_params

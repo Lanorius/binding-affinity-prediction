@@ -19,7 +19,7 @@ import time  # for timestamps to easily distinguish results
 #######################################################################################################################
 # ini file  Parser for dataset selection
 
-data_used, use_model, files, do_regression, nr_prediction_classes, shuffle_drugs, shuffle_targets, dummy_run, \
+data_used, use_model, files, do_regression, nr_prediction_classes, tasks, shuffle_drugs, shuffle_targets, dummy_run, \
 overtrain, special_params = parse_config()
 
 data_set = Dataset(files['embeddings'],
@@ -31,7 +31,7 @@ data_set = Dataset(files['embeddings'],
                    shuffle_targets)
 
 class_borders = np.linspace(data_set.data_ranges[data_set.data_type][0], data_set.data_ranges[data_set.data_type][1],
-                            nr_prediction_classes+1)
+                            nr_prediction_classes + 1)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -62,7 +62,6 @@ if not dummy_run:
 else:
     numbers_of_epochs = list(range(3, 6))
 
-
 #######################################################################################################################
 # train/test split
 
@@ -85,12 +84,11 @@ train_data_split.append(train_rest)
 
 t = time.localtime()
 timestamp = time.strftime('%b-%d-%Y_%H%M', t)
-os.mkdir("../Results/Results_"+timestamp)
-
+os.mkdir("../Results/Results_" + timestamp)
 
 best_parameters_overall = [0, 0, 0]
-
 current_best_r2m = 0
+best_loss = np.inf
 
 losses_per_epoch = []
 best_loss_per_epoch = []
@@ -150,13 +148,14 @@ for test_train_index in tqdm(range(number_of_splits)):
             current_best_r2m = performance_regression
             best_loss_per_epoch = new_loss_per_epoch
             best_parameters_overall = [batch_size, learning_rate, number_of_epochs]
+
         # TODO: maybe find an alternative for deciding which model was best
         # if len(best_loss_per_epoch) == 0 or (statistics.mean(new_loss_per_epoch[-50:]) < (statistics.mean(
         #        best_loss_per_epoch[-50:]))):
         #    best_loss_per_epoch = new_loss_per_epoch
         #    best_parameters_overall = [batch_size, learning_rate, number_of_epochs]
         # print(performance_regression)
-        print(best_parameters_overall)
+        # print(best_parameters_overall)
 
 print('Finished Tuning')
 print(current_best_r2m)
@@ -195,7 +194,7 @@ while zeroes_predicted:
     can_this_cause_an_endless_loop += 1
     if can_this_cause_an_endless_loop > 5:
         raise Exception("The model appears to predict zeroes after each new training.")
-    print("Training attempt No: "+str(can_this_cause_an_endless_loop))
+    print("Training attempt No: " + str(can_this_cause_an_endless_loop))
     training_loss_per_epoch = model_manager.train(train_loader, best_parameters_overall[2], best_parameters_overall[0],
                                                   final_training=True)
     if model_manager.test(test_loader, data_used, best_parameters_overall, prevent_zeroes=True):
@@ -205,10 +204,11 @@ print('Finished Training')
 if not training_loss_per_epoch:
     raise Exception("Something went wrong. The training loss per epoch is empty.")
 
-model_manager.save_model(os.path.join("../Results/Results_"+timestamp+"/model_"+data_used[0]+"_"+timestamp+'.pth'))
+model_manager.save_model(
+    os.path.join("../Results/Results_" + timestamp + "/model_" + data_used[0] + "_" + timestamp + '.pth'))
 
-model.load_state_dict(torch.load(os.path.join("../Results/Results_"+timestamp+"/model_" +
-                                              data_used[0]+"_"+timestamp+'.pth')))
+model.load_state_dict(torch.load(os.path.join("../Results/Results_" + timestamp + "/model_" +
+                                              data_used[0] + "_" + timestamp + '.pth')))
 
 print_loss_per_epoch(best_loss_per_epoch, training_loss_per_epoch, data_used[0], timestamp)
 # TODO: remove comment for true run
