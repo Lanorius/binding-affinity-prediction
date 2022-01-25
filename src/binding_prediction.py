@@ -40,7 +40,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # parameters for improving the code
 # dummy_run: if True a dummy run to fix bugs is started
-# overtrain: adds 100 epochs to validation and training
 # and requires dummy_run = False, and existing hyper parameters from a previous run
 
 
@@ -86,63 +85,65 @@ t = time.localtime()
 timestamp = time.strftime('%b-%d-%Y_%H%M', t)
 os.mkdir("../Results/Results_" + timestamp)
 
-best_parameters_overall = [0, 0, 0]
-best_validation_loss = np.inf
-
 print('Using device:', device)
 
-for test_train_index in tqdm(range(number_of_splits)):
-    for optimization in tqdm(range(number_of_random_draws)):
+if not overtrain:
+    best_parameters_overall = [0, 0, 0]
+    best_validation_loss = np.inf
 
-        if use_model == "chemVAE":
-            model = PcNet()
-        elif use_model == "chemBERTa":
-            model = PcNet_chemBERTa()
-        elif use_model == "RDKit":
-            model = PcNet_RDKit()
-        else:
-            raise Exception("Model is undefined.")
-        # model = EmbeddingReducingNN()
+    for test_train_index in tqdm(range(number_of_splits)):
+        for optimization in tqdm(range(number_of_random_draws)):
 
-        if overtrain:
-            batch_size, learning_rate, number_of_epochs = literal_eval(special_params['overtrain_params'])
+            if use_model == "chemVAE":
+                model = PcNet()
+            elif use_model == "chemBERTa":
+                model = PcNet_chemBERTa()
+            elif use_model == "RDKit":
+                model = PcNet_RDKit()
+            else:
+                raise Exception("Model is undefined.")
+            # model = EmbeddingReducingNN()
 
-        else:
             batch_size = random.choice(batch_sizes)
             learning_rate = random.choice(learning_rates)
             number_of_epochs = random.choice(numbers_of_epochs)
 
-        tester = Tester(device, timestamp)
-        trainer = Trainer(device, optim.Adam(model.parameters(), lr=learning_rate), nr_prediction_classes,
-                          class_borders, data_used[0], timestamp)
+            tester = Tester(device, timestamp)
+            trainer = Trainer(device, optim.Adam(model.parameters(), lr=learning_rate), nr_prediction_classes,
+                              class_borders, data_used[0], timestamp)
 
-        # create n train and validation sets
-        training_sets = []
-        validation_set = []
+            # create n train and validation sets
+            training_sets = []
+            validation_set = []
 
-        for i in range(len(train_data_split)):
-            train_dataset = []
-            test_dataset = train_data_split[i]
-            for j in range(len(train_data_split)):
-                # if i != j, the split is added to the training data, the case i == j is used as corresponding test set
-                if j != i:
-                    train_dataset += train_data_split[j]
-            training_sets.append(torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size,
-                                                             shuffle=False))
-            validation_set.append(torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size,
-                                                              shuffle=False))
+            for i in range(len(train_data_split)):
+                train_dataset = []
+                test_dataset = train_data_split[i]
+                for j in range(len(train_data_split)):
+                    # if i != j
+                    # the split is added to the training data, the case i == j is used as corresponding test set
+                    if j != i:
+                        train_dataset += train_data_split[j]
+                training_sets.append(torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size,
+                                                                 shuffle=False))
+                validation_set.append(torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size,
+                                                                  shuffle=False))
 
-        training_loss_per_epoch, validation_loss_per_epoch = trainer.train(model, training_sets[test_train_index],
-                                                                           validation_set[test_train_index],
-                                                                           number_of_epochs,
-                                                                           batch_size, final_training=False)
+            training_loss_per_epoch, validation_loss_per_epoch = trainer.train(model, training_sets[test_train_index],
+                                                                               validation_set[test_train_index],
+                                                                               number_of_epochs,
+                                                                               batch_size, final_training=False)
 
-        if validation_loss_per_epoch[-1] < best_validation_loss:
-            best_validation_loss = validation_loss_per_epoch[-1]
-            best_parameters_overall = [batch_size, learning_rate, number_of_epochs]
+            if validation_loss_per_epoch[-1] < best_validation_loss:
+                best_validation_loss = validation_loss_per_epoch[-1]
+                best_parameters_overall = [batch_size, learning_rate, number_of_epochs]
 
-print('Finished Tuning')
-print(best_parameters_overall)
+    print('Finished Tuning')
+    print(best_parameters_overall)
+
+else:
+    print("Overtraining, skipped Tuning")
+    best_parameters_overall = literal_eval(special_params['overtrain_params'])
 
 #######################################################################################################################
 # training
