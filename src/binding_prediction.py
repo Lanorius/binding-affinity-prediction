@@ -187,7 +187,7 @@ print('Finished Training')
 if not training_loss_per_epoch:
     raise Exception("Something went wrong. The training loss per epoch is empty.")
 
-print_loss_per_epoch(training_loss_per_epoch, validation_loss_per_epoch, data_used[0], timestamp)
+print_loss_per_epoch(validation_loss_per_epoch, training_loss_per_epoch, data_used[0], timestamp)
 
 model_manager.save_model(
     os.path.join("../Results/Results_" + timestamp + "/model_" + data_used[0] + "_" + timestamp + '.pth'))

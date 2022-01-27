@@ -74,10 +74,6 @@ def plot_output_hist(predicted, timestamp, plot_name):
             g.write("\n")
     g.close()
 
-# TODO: Remove after fixing dependencies
-# def only_r2m(all_predicted, all_labels):
-#    return emetrics.get_r2m(all_labels, all_predicted)
-
 
 def bootstrap_stats(all_predicted, all_labels, data_used):
     r2m = emetrics.get_r2m(all_labels, all_predicted)
