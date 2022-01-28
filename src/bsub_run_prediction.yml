@@ -1,8 +1,8 @@
 # For more options, check out:
 # https://www.ibm.com/support/knowledgecenter/en/SSWRJV_10.1.0/lsf_command_ref/bsub.yaml.1.html
 io: 
-    outputOverwriteFile: stdout_davis_overtrain.log
-    errorOverwriteFile: stderr_davis_overtrain.log
+    outputOverwriteFile: stdout_bdb_d1_t1.log
+    errorOverwriteFile: stderr_bdb_d1_t1.log
 limit: 
     coreLimit: 20
     # in hh:mm
@@ -45,6 +45,6 @@ resource:
 
 properties:
     queueName: low-end-normal
-    jobName: dg_prediction_davis_overtrain
+    jobName: dg_prediction_bdb_d1_t1
 command: python binding_prediction.py
 
