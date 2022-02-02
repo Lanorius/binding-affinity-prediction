@@ -53,14 +53,15 @@ else:
     number_of_random_draws = 2
 
 # batch_sizes = list(range(128, 257, 4))
-batch_sizes = list(range(256, 513, 4))
+# batch_sizes = list(range(256, 513, 4))
+batch_sizes = list(range(128, 513, 4))
+# batch_sizes = list(range(1024, 4096, 4))
 learning_rates = [0.01, 0.001, 0.0001]
 
 #  learning_rates = list(np.arange(0.0001, 0.01, 0.0001))
 
 if not dummy_run:
-    # numbers_of_epochs = list(range(200, 401))
-    number_of_epochs = list(range(300, 501))
+    numbers_of_epochs = list(range(200, 401))
 else:
     numbers_of_epochs = list(range(3, 6))
 
