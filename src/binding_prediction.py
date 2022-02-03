@@ -19,7 +19,7 @@ import time  # for timestamps to easily distinguish results
 #######################################################################################################################
 # ini file  Parser for dataset selection
 
-data_used, use_model, files, do_regression, nr_prediction_classes, tasks, shuffle_drugs, shuffle_targets, dummy_run, \
+data_used, use_model, files, do_regression, nr_prediction_classes, shuffle_drugs, shuffle_targets, dummy_run, \
 overtrain, special_params = parse_config()
 
 data_set = Dataset(files['embeddings'],
@@ -44,7 +44,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 if not dummy_run and not overtrain:
-    number_of_random_draws = 5
+    number_of_random_draws = 10
 elif not dummy_run and overtrain:
     number_of_random_draws = 1  # since we still want the best validation loss for the plots
 elif dummy_run and overtrain:
