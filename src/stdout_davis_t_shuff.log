@@ -1,0 +1,345 @@
+Sender: LSF System <lsfadmin@lsf-server-3.rostclust>
+Subject: Job 14405: <dg_prediction_davis_t_shuff> in cluster <rost_lsf_cluster_1> Done
+
+Job <dg_prediction_davis_t_shuff> was submitted from host <lsf-master-1.rostclust> by user <giessing> in cluster <rost_lsf_cluster_1> at Thu Feb  3 09:23:39 2022
+Job was executed on host(s) <lsf-server-3.rostclust>, in queue <low-end-normal>, as user <giessing> in cluster <rost_lsf_cluster_1> at Thu Feb  3 09:23:39 2022
+</mnt/home/giessing> was used as the home directory.
+</mnt/project/protdrugaffinity/dg/binding-affinity-prediction/src> was used as the working directory.
+Started at Thu Feb  3 09:23:39 2022
+Terminated at Fri Feb  4 08:44:53 2022
+Results reported at Fri Feb  4 08:44:53 2022
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python binding_prediction.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   326184.50 sec.
+    Max Memory :                                 1718 MB
+    Average Memory :                             1702.30 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              5
+    Max Threads :                                26
+    Run time :                                   84074 sec.
+    Turnaround time :                            84074 sec.
+
+The output (if any) follows:
+
+Using device: cuda
+Finished Tuning
+[492, 0.001, 290]
+Training attempt No: 1
+[1] loss: 6.5384014
+[2] loss: 6.0578026
+[3] loss: 6.0852626
+[4] loss: 6.0915238
+[5] loss: 6.0536198
+[6] loss: 5.9431862
+[7] loss: 6.2840142
+[8] loss: 5.9928577
+[9] loss: 5.9005091
+[10] loss: 5.8931788
+[11] loss: 5.8872692
+[12] loss: 5.9287622
+[13] loss: 6.5824978
+[14] loss: 6.1673921
+[15] loss: 6.3631261
+[16] loss: 6.1916418
+[17] loss: 5.9075637
+[18] loss: 5.8953920
+[19] loss: 6.0080694
+[20] loss: 5.8603877
+[21] loss: 6.2878399
+[22] loss: 5.9218202
+[23] loss: 5.9160212
+[24] loss: 5.8048236
+[25] loss: 6.2028088
+[26] loss: 5.5575848
+[27] loss: 5.5184049
+[28] loss: 5.6529809
+[29] loss: 5.7981154
+[30] loss: 5.7148596
+[31] loss: 5.4253114
+[32] loss: 5.5780398
+[33] loss: 5.6881809
+[34] loss: 5.3646186
+[35] loss: 5.4622973
+[36] loss: 5.2944312
+[37] loss: 5.0581950
+[38] loss: 5.5253761
+[39] loss: 5.7878939
+[40] loss: 5.1980681
+[41] loss: 5.2062203
+[42] loss: 5.1687791
+[43] loss: 5.1116376
+[44] loss: 5.2911387
+[45] loss: 5.5057611
+[46] loss: 5.5930153
+[47] loss: 4.9742389
+[48] loss: 5.1639261
+[49] loss: 4.8872243
+[50] loss: 5.1725557
+[51] loss: 5.2288087
+[52] loss: 4.9578674
+[53] loss: 4.9686357
+[54] loss: 5.2005657
+[55] loss: 4.8465977
+[56] loss: 4.9375835
+[57] loss: 5.2899654
+[58] loss: 4.8647051
+[59] loss: 4.9559460
+[60] loss: 4.9970322
+[61] loss: 5.0329357
+[62] loss: 4.8414666
+[63] loss: 5.2095865
+[64] loss: 4.8578388
+[65] loss: 4.8246459
+[66] loss: 4.8280838
+[67] loss: 4.8130995
+[68] loss: 5.1172882
+[69] loss: 4.8647987
+[70] loss: 4.9136221
+[71] loss: 4.7822271
+[72] loss: 4.8640300
+[73] loss: 4.7656498
+[74] loss: 4.8886020
+[75] loss: 4.7983766
+[76] loss: 4.7358723
+[77] loss: 4.7874854
+[78] loss: 4.9461516
+[79] loss: 4.7992147
+[80] loss: 4.8187746
+[81] loss: 4.7799602
+[82] loss: 4.8013428
+[83] loss: 4.7278470
+[84] loss: 4.8192566
+[85] loss: 4.8334051
+[86] loss: 4.7883782
+[87] loss: 4.7746881
+[88] loss: 4.8183797
+[89] loss: 4.7529647
+[90] loss: 4.7459057
+[91] loss: 4.7491170
+[92] loss: 4.7586574
+[93] loss: 4.7862071
+[94] loss: 4.7374225
+[95] loss: 4.7250080
+[96] loss: 4.8534125
+[97] loss: 4.7641492
+[98] loss: 4.6888184
+[99] loss: 4.7237547
+[100] loss: 4.6834792
+[101] loss: 4.7089041
+[102] loss: 4.7047452
+[103] loss: 4.7462453
+[104] loss: 4.7011158
+[105] loss: 4.8901803
+[106] loss: 4.8583058
+[107] loss: 4.7835471
+[108] loss: 4.6998532
+[109] loss: 4.6965889
+[110] loss: 4.7205460
+[111] loss: 4.6761544
+[112] loss: 4.7455683
+[113] loss: 4.6593341
+[114] loss: 4.7485853
+[115] loss: 4.6338548
+[116] loss: 4.7131278
+[117] loss: 4.7415546
+[118] loss: 4.6015525
+[119] loss: 4.6517842
+[120] loss: 4.7840380
+[121] loss: 4.5894460
+[122] loss: 4.6013505
+[123] loss: 4.5377205
+[124] loss: 4.6298225
+[125] loss: 4.5780937
+[126] loss: 4.6095066
+[127] loss: 4.6244842
+[128] loss: 4.7251600
+[129] loss: 4.6505401
+[130] loss: 4.6205591
+[131] loss: 4.6081717
+[132] loss: 4.4902376
+[133] loss: 4.6059918
+[134] loss: 4.6266411
+[135] loss: 4.5510374
+[136] loss: 4.5492321
+[137] loss: 4.6338759
+[138] loss: 4.5160599
+[139] loss: 4.5214831
+[140] loss: 4.7785075
+[141] loss: 4.5657989
+[142] loss: 4.5688825
+[143] loss: 4.5775364
+[144] loss: 4.5482025
+[145] loss: 4.5100589
+[146] loss: 4.6818942
+[147] loss: 4.6182877
+[148] loss: 4.4419597
+[149] loss: 4.4831907
+[150] loss: 4.4981850
+[151] loss: 4.4997955
+[152] loss: 4.5133110
+[153] loss: 4.4349298
+[154] loss: 4.5024781
+[155] loss: 4.4513843
+[156] loss: 4.5030318
+[157] loss: 4.4903054
+[158] loss: 4.4429213
+[159] loss: 4.6600002
+[160] loss: 4.4353193
+[161] loss: 4.4274522
+[162] loss: 4.4180145
+[163] loss: 4.4678412
+[164] loss: 4.4637100
+[165] loss: 4.4158275
+[166] loss: 4.4587196
+[167] loss: 4.4453549
+[168] loss: 4.4066588
+[169] loss: 4.4425078
+[170] loss: 4.3646704
+[171] loss: 4.5150277
+[172] loss: 4.4353392
+[173] loss: 4.4178812
+[174] loss: 4.3186671
+[175] loss: 4.4666964
+[176] loss: 4.2753213
+[177] loss: 4.3168339
+[178] loss: 4.4264594
+[179] loss: 4.3360489
+[180] loss: 4.3421971
+[181] loss: 4.4184745
+[182] loss: 4.3123147
+[183] loss: 4.4290594
+[184] loss: 4.4160634
+[185] loss: 4.3707389
+[186] loss: 4.3719730
+[187] loss: 4.3392273
+[188] loss: 4.3168566
+[189] loss: 4.4203557
+[190] loss: 4.3446936
+[191] loss: 4.3230049
+[192] loss: 4.2592784
+[193] loss: 4.4116764
+[194] loss: 4.4311896
+[195] loss: 4.4195390
+[196] loss: 4.7637610
+[197] loss: 4.4501212
+[198] loss: 4.3743986
+[199] loss: 4.5311705
+[200] loss: 4.4136842
+[201] loss: 4.2771762
+[202] loss: 4.4436650
+[203] loss: 4.4038808
+[204] loss: 4.4352476
+[205] loss: 4.6014092
+[206] loss: 4.4263847
+[207] loss: 4.2408790
+[208] loss: 4.5566642
+[209] loss: 4.3339790
+[210] loss: 4.2388323
+[211] loss: 4.3654652
+[212] loss: 4.4356207
+[213] loss: 4.2783303
+[214] loss: 4.2970829
+[215] loss: 4.2282602
+[216] loss: 4.1315590
+[217] loss: 4.1207459
+[218] loss: 4.2513882
+[219] loss: 4.3161648
+[220] loss: 4.2323721
+[221] loss: 4.2253666
+[222] loss: 4.2032248
+[223] loss: 4.2360654
+[224] loss: 4.3342595
+[225] loss: 4.5075635
+[226] loss: 4.2824446
+[227] loss: 4.2595628
+[228] loss: 4.4807042
+[229] loss: 4.3550359
+[230] loss: 4.4355876
+[231] loss: 4.2143415
+[232] loss: 4.4929287
+[233] loss: 4.4942875
+[234] loss: 4.2044549
+[235] loss: 4.3466019
+[236] loss: 4.6681314
+[237] loss: 4.2831574
+[238] loss: 4.1724984
+[239] loss: 4.3514208
+[240] loss: 4.3435464
+[241] loss: 4.1386765
+[242] loss: 4.2718314
+[243] loss: 4.1454895
+[244] loss: 4.2275193
+[245] loss: 4.2385819
+[246] loss: 4.2856108
+[247] loss: 4.2058974
+[248] loss: 4.2199093
+[249] loss: 4.2046511
+[250] loss: 4.2511929
+[251] loss: 4.1404389
+[252] loss: 4.1398060
+[253] loss: 4.2540383
+[254] loss: 4.2222006
+[255] loss: 4.2273159
+[256] loss: 4.3741263
+[257] loss: 4.3052051
+[258] loss: 4.2963557
+[259] loss: 4.3073233
+[260] loss: 4.2594066
+[261] loss: 4.2751790
+[262] loss: 4.2278509
+[263] loss: 4.4237915
+[264] loss: 4.3727765
+[265] loss: 4.3092121
+[266] loss: 4.1735207
+[267] loss: 4.2717258
+[268] loss: 4.3282600
+[269] loss: 4.5697272
+[270] loss: 4.3154061
+[271] loss: 4.3822284
+[272] loss: 4.1402552
+[273] loss: 4.2689971
+[274] loss: 4.2190879
+[275] loss: 4.2534052
+[276] loss: 4.2785328
+[277] loss: 4.2323814
+[278] loss: 4.4152228
+[279] loss: 4.5760689
+[280] loss: 4.1972150
+[281] loss: 4.1953254
+[282] loss: 4.3297736
+[283] loss: 4.2423649
+[284] loss: 4.3095559
+[285] loss: 4.4697764
+[286] loss: 4.3391813
+[287] loss: 4.2013081
+[288] loss: 4.0853707
+[289] loss: 4.3194993
+[290] loss: 4.6326839
+Finished Training
+The r2m value for this run is:  0.398
+The AUPR for this run is:  0.565
+The Concordance Index (CI) for this run is:  0.792
+The Mean Squared Error (MSE) for this run is:  0.507
+r2m std is:  0.011
+AUPR std is:  0.016
+CI std is:  0.005
+MSE std is:  0.009
+Best parameters were: [492, 0.001, 290]
+
+
+PS:
+
+Read file <stderr_davis_t_shuff.log> for stderr output of this job.
+
