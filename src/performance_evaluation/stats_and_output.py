@@ -24,8 +24,6 @@ def print_loss_per_epoch(validation_loss_vector, training_loss_vector, data_used
         for s in training_loss_vector:
             g.write(str(s) + " ")
         g.close()
-    # print(validation_loss_vector)
-    # print(training_loss_vector)
     validation_loss_vector = validation_loss_vector[1:]
     training_loss_vector = training_loss_vector[1:]
     plt.clf()

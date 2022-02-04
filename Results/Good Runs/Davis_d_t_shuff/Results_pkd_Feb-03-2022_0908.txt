@@ -1,0 +1,10 @@
+The r2m value for this run is: 0.079
+The AUPR for this run is: 0.542
+The Concordance Index (CI) for this run is: 0.554
+The Mean Squared Error (MSE) for this run is: 0.752
+The best parameters for this run were: [492, 0.01, 302]
+
+r2m std is: 0.008
+AUPR std is: 0.0
+CI std is: 0.003
+MSE std is: 0.006
