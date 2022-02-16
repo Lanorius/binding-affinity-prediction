@@ -44,7 +44,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 if not dummy_run and not overtrain:
-    number_of_random_draws = 10  # usually 10
+    number_of_random_draws = 20  # usually 10
 elif not dummy_run and overtrain:
     number_of_random_draws = 1  # since we still want the best validation loss for the plots
 elif dummy_run and overtrain:
@@ -52,16 +52,14 @@ elif dummy_run and overtrain:
 else:
     number_of_random_draws = 2
 
-# batch_sizes = list(range(128, 257, 4))
-# batch_sizes = list(range(256, 513, 4))
-batch_sizes = list(range(128, 513, 4))
-# batch_sizes = list(range(128, 4096, 4))
+# batch_sizes = list(range(128, 513, 4))  # for Davis
+batch_sizes = list(range(128, 1025, 4))   # for BDB
 learning_rates = [0.01, 0.001, 0.0001]
 
 #  learning_rates = list(np.arange(0.0001, 0.01, 0.0001))
 
 if not dummy_run:
-    numbers_of_epochs = list(range(200, 601))
+    numbers_of_epochs = list(range(200, 401))
 else:
     numbers_of_epochs = list(range(3, 6))
 
