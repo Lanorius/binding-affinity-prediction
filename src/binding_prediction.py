@@ -44,7 +44,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 if not dummy_run and not overtrain:
-    number_of_random_draws = 20  # usually 10
+    number_of_random_draws = 10
 elif not dummy_run and overtrain:
     number_of_random_draws = 1  # since we still want the best validation loss for the plots
 elif dummy_run and overtrain:
