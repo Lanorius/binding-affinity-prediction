@@ -54,7 +54,7 @@ else:
 
 # batch_sizes = list(range(128, 513, 4))  # for Davis
 batch_sizes = list(range(128, 1025, 4))   # for BDB
-learning_rates = [0.01, 0.001, 0.0001]
+learning_rates = [0.001, 0.0001]
 
 #  learning_rates = list(np.arange(0.0001, 0.01, 0.0001))
 
