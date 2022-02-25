@@ -1,6 +1,37 @@
 # Prediction-Of-Binding-Affinity
 
+Our aim was to predict the binding affinity of compounds and proteins by using a fully connected neural network.
+To encode both types of molecules we used ChemVAE for the compounds and ProT5 for the proteins. 
+
 ![plot](./images/mymodel.png)
+
+
+## How to use our Model
+1. Clone this repo
+2. Ensure the requirements are met
+3. check in the src/config.ini file if all files are chosen correctly
+	*if you wish to run a special task, set the relevant task to true
+	*if you wish to use overtraining, you have to set the parameters in the special params section
+4. run uisng "python src/binding_prediction.py"
+
+This algorithm currently only works with pKd scores. Leave the general section as it is. When the general setting is set to davis
+the model works on both the pKd scores from the Davis set as well as those from the BindingDB.
+The compound setting should not be changed as well, unless another way of encoding the compounds is implemented. 
+
+
+#### Embeddings
+
+[ChemVAE](https://github.com/aspuru-guzik-group/chemical_vae): Variational auto encoder that was used to create compound embeddings
+
+[T5 Embeddings](https://github.com/agemagician/ProtTrans): Resource for creating protein sequence embeddings
+
+#### Databases
+
+[BindingDB](https://www.bindingdb.org/bind/index.jsp): Database of measured binding affinity
+
+<!--
+
+## Table of Contents
 
 * [Description](#Description)
 * [Setup](#Setup)
@@ -18,3 +49,12 @@
 		* [Related Work](#Related-work)
 * [ToDOs](#ToDOs)
 * [Future ideas](#Future-ideas)
+
+
+
+#### config.ini
+
+This file is for adjusting the settings that should be used for training a new model.
+-->
+
+
