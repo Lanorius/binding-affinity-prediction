@@ -1,6 +1,7 @@
 .idea
 plots
 *.pyc
+old_README.md
 data/kiba/folds/test_fold_setting1.txt
 data/kiba/folds/train_fold_setting1.txt
 data/kiba/kiba_drug_sim.txt
@@ -9,9 +10,4 @@ data/davis/target-target_similarities_WS.txt
 data/davis/folds/train_fold_setting1.txt
 data/davis/folds/test_fold_setting1.txt
 data/davis/drug-drug_similarities_2D.txt
-src/models/test_file.py
-src/models/RNN.py
-model.pth
-scatter_plot_regression.png
-src/loss_over_batch.png
-prediction-of-binding-affinity
+
