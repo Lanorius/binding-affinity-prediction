@@ -1,9 +1,12 @@
-# Prediction-Of-Binding-Affinity
+# My Master's Thesis: Prediction-Of-Binding-Affinity
 
 Our aim was to predict the binding affinity of compounds and proteins by using a fully connected neural network.
 To encode both types of molecules we used ChemVAE for the compounds and ProT5 for the proteins. 
 
 ![plot](./images/mymodel.png)
+
+This repo compliments the datasets created using the algorithm in:
+[Data Creator](https://github.com/Lanorius/dataset_creation): Creates clustered and unclustered datasets for drug-target-interaction prediction.
 
 
 #### How to use our Model
@@ -26,10 +29,6 @@ The compound setting should not be changed as well, unless another way of encodi
 [ChemVAE](https://github.com/aspuru-guzik-group/chemical_vae): Variational auto encoder that was used to create compound embeddings
 
 [T5 Embeddings](https://github.com/agemagician/ProtTrans): Resource for creating protein sequence embeddings
-
-#### Databases
-
-[BindingDB](https://www.bindingdb.org/bind/index.jsp): Database of measured binding affinity
 
 <!--
 
