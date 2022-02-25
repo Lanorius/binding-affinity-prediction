@@ -14,7 +14,7 @@ To encode both types of molecules we used ChemVAE for the compounds and ProT5 fo
 	*if you wish to use overtraining, you have to set the parameters in the special params section
 4. run uisng "python src/binding_prediction.py"
 
-Several clustered and unclustered datasets are available in the data section.
+Several clustered and unclustered datasets are available in the data folder.
 
 This algorithm currently only works with pKd scores. Leave the general section as it is. When the general setting is set to davis
 the model works on both the pKd scores from the Davis set as well as those from the BindingDB.

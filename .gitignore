@@ -1,13 +1,3 @@
 .idea
-plots
 *.pyc
-old_README.md
-data/kiba/folds/test_fold_setting1.txt
-data/kiba/folds/train_fold_setting1.txt
-data/kiba/kiba_drug_sim.txt
-data/kiba/kiba_target_sim.txt
-data/davis/target-target_similarities_WS.txt
-data/davis/folds/train_fold_setting1.txt
-data/davis/folds/test_fold_setting1.txt
-data/davis/drug-drug_similarities_2D.txt
-
+ignored_files
