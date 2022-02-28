@@ -15,7 +15,7 @@ This repo compliments the datasets created using the algorithm in:
 3. check in the src/config.ini file if all files are chosen correctly
 	*if you wish to run a special task, set the relevant task to true
 	*if you wish to use overtraining, you have to set the parameters in the special params section
-4. run uisng "python src/binding_prediction.py"
+4. run by using "python src/binding_prediction.py"
 
 Several clustered and unclustered datasets are available in the data folder.
 
