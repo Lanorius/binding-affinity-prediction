@@ -1,0 +1,9 @@
+torch~=1.9.1
+numpy~=1.21.2
+pandas~=1.3.2
+silx~=0.15.2
+configparser~=5.2.0
+scikit-learn~=1.0
+tqdm~=4.62.1
+matplotlib~=3.4.3
+lifelines~=0.26.3
