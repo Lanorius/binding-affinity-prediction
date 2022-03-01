@@ -22,6 +22,10 @@ def parse_config():
         # for the Davis Data
         data_used = ["pkd", "Davis"]
 
+    elif general_setting['database'] == 'bdb':
+        # for the Kiba Data
+        data_used = ["pkd", "BindingDB"]
+
     elif general_setting['database'] == 'kiba':
         # for the Kiba Data
         data_used = ["kiba", "Kiba"]

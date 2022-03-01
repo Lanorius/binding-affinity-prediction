@@ -52,11 +52,16 @@ elif dummy_run and overtrain:
 else:
     number_of_random_draws = 2
 
-# batch_sizes = list(range(128, 513, 4))  # for Davis
-batch_sizes = list(range(128, 1025, 4))   # for BDB
+if data_used[1] == "Davis":
+    batch_sizes = list(range(128, 513, 4))  # for Davis
+elif data_used[1] == "BindingDB":
+    batch_sizes = list(range(128, 1025, 4))   # for BDB
+else:
+    raise Exception("Database in config not supported.")
+
 learning_rates = [0.001, 0.0001]
 
-#  learning_rates = list(np.arange(0.0001, 0.01, 0.0001))
+#  learning_rates = list(np.arange(0.0001, 0.01, 0.0001))  # too many options
 
 if not dummy_run:
     numbers_of_epochs = list(range(200, 401))
