@@ -61,8 +61,6 @@ else:
 
 learning_rates = [0.001, 0.0001]
 
-#  learning_rates = list(np.arange(0.0001, 0.01, 0.0001))  # too many options
-
 if not dummy_run:
     numbers_of_epochs = list(range(200, 401))
 else:
@@ -74,14 +72,14 @@ else:
 train_data_split = []
 
 if not dummy_run:
-    number_of_splits = 5  # three for training, one for validation, one for testing
+    number_of_splits = 5  # + a sixth hold out set
 else:
     number_of_splits = 2
 
-train_rest, test_split = train_test_split(data_set, test_size=1 / (number_of_splits + 1), random_state=42)
+train_rest, test_split = train_test_split(data_set, test_size=1 / (number_of_splits + 1), random_state=1)
 all_training_samples = train_rest
 for i in range(number_of_splits, 1, -1):
-    train_rest, train_split = train_test_split(train_rest, test_size=1 / i, random_state=42)
+    train_rest, train_split = train_test_split(train_rest, test_size=1 / i, random_state=1)
     train_data_split.append(train_split)
 train_data_split.append(train_rest)
 
@@ -139,7 +137,8 @@ if not overtrain:
             training_loss_per_epoch, validation_loss_per_epoch = trainer.train(model, training_sets[test_train_index],
                                                                                validation_set[test_train_index],
                                                                                number_of_epochs,
-                                                                               batch_size, final_training=False)
+                                                                               batch_size,
+                                                                               final_training=False)
 
             if validation_loss_per_epoch[-1] < best_validation_loss:
                 best_validation_loss = validation_loss_per_epoch[-1]
@@ -168,28 +167,14 @@ trainer = Trainer(device, optim.Adam(model.parameters(), lr=best_parameters_over
                   class_borders, data_used[0], timestamp)
 tester = Tester(device, timestamp)
 model_manager = ModelManager(model, trainer, tester)
-
 train_loader = torch.utils.data.DataLoader(dataset=all_training_samples, batch_size=best_parameters_overall[0],
                                            shuffle=False)
 test_loader = torch.utils.data.DataLoader(dataset=test_split, batch_size=best_parameters_overall[0], shuffle=False)
 
-zeroes_predicted = True  # TODO: find a more elegant solution to prevent empty models, also this might not work.
-can_this_cause_an_endless_loop = 0
-training_loss_per_epoch = []
-validation_loss_per_epoch = []
-while zeroes_predicted:
-    can_this_cause_an_endless_loop += 1
-    if can_this_cause_an_endless_loop > 5:
-        raise Exception("The model appears to predict zeroes after each new training.")
-    print("Training attempt No: " + str(can_this_cause_an_endless_loop))
-    training_loss_per_epoch, validation_loss_per_epoch = model_manager.train(train_loader, test_loader,
-                                                                             best_parameters_overall[2],
-                                                                             best_parameters_overall[0],
-                                                                             final_training=True)
-
-    if validation_loss_per_epoch[-1] != 0:  # Sometimes there is a model that predicts only zeroes on the testing data.
-        zeroes_predicted = False
-
+training_loss_per_epoch, validation_loss_per_epoch = model_manager.train(train_loader, test_loader,
+                                                                         best_parameters_overall[2],
+                                                                         best_parameters_overall[0],
+                                                                         final_training=True)
 print('Finished Training')
 if not training_loss_per_epoch:
     raise Exception("Something went wrong. The training loss per epoch is empty.")
@@ -201,6 +186,7 @@ model_manager.save_model(
 
 model.load_state_dict(torch.load(os.path.join("../Results/Results_" + timestamp + "/model_" +
                                               data_used[0] + "_" + timestamp + '.pth')))
+
 
 #######################################################################################################################
 # testing

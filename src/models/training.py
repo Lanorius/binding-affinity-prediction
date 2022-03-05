@@ -30,11 +30,11 @@ class Trainer:
 
         return output_list
 
-    def train(self, model, data_for_training, data_for_validating, number_of_epochs, batch_size, final_training):
-        training_loss_per_epoch = []
+    def train(self, model, data_for_training, data_for_validating, number_of_epochs, batch_size,
+              final_training):
         validation_loss_per_epoch = []
+        training_loss_per_epoch = []
         for epoch_index in range(number_of_epochs):
-
             training_loss = 0.0
             validation_loss = 0.0
 
@@ -49,7 +49,8 @@ class Trainer:
                 self.optimizer.step()
                 training_loss += total_loss.item()
 
-            training_loss_per_epoch += [training_loss/batch_size]
+            # training_loss_per_epoch += [training_loss/batch_size]
+            training_loss_per_epoch += [training_loss / (batch_size*len(data_for_training))]
 
             for i, (protein_compounds, regression_label, _, _) in enumerate(data_for_validating):
                 # self.optimizer.zero_grad()
@@ -62,10 +63,12 @@ class Trainer:
                 # self.optimizer.step()
                 validation_loss += total_loss.item()
 
-            validation_loss_per_epoch += [validation_loss / batch_size]
+            # validation_loss_per_epoch += [validation_loss / batch_size]
+            validation_loss_per_epoch += [validation_loss / (batch_size*len(data_for_validating))]
 
             if final_training:
-                print('[%d] loss: %.7f' % (epoch_index + 1, validation_loss / batch_size))
+                # print('[%d] loss: %.7f' % (epoch_index + 1, validation_loss / batch_size))
+                print('[%d] loss: %.7f' % (epoch_index + 1, validation_loss / (batch_size*len(data_for_validating))))
 
         return training_loss_per_epoch, validation_loss_per_epoch
 
