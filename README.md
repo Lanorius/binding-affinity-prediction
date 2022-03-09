@@ -1,21 +1,25 @@
 # My Master's Thesis: Prediction-Of-Binding-Affinity
 
-Our aim was to predict the binding affinity of compounds and proteins by using a fully connected neural network.
+Our aim was to predict the binding affinity of compounds and proteins by using a fully connected neural network.\
 To encode both types of molecules we used ChemVAE for the compounds and ProT5 for the proteins. 
 
 ![plot](./images/mymodel.png)
 
-This repo compliments the datasets created using the algorithm in:
-[Data Creator](https://github.com/Lanorius/dataset_creation): Creates clustered and unclustered datasets for drug-target-interaction prediction.
+The following two repos were also part of my project. All three are required to repeat my steps:\
+[Data Creator](https://github.com/Lanorius/dataset_creation): filtering and clustering of DTI dataset\
+[ChemVAE Fork](https://github.com/Lanorius/chemical_vae): encoding of the small molecules
+
+Additionally PortT5 are needed:\
+[Prot T5] (https://github.com/agemagician/ProtTrans): encoding of the proteins
 
 
-#### How to use our Model
+#### How to use our Prediction Model
 1. Clone this repo
 2. Ensure the requirements are met
-3. check in the src/config.ini file if all files are chosen correctly
+3. Check in the src/config.ini file if all files are chosen correctly
 	*if you wish to run a special task, set the relevant task to true
 	*if you wish to use overtraining, you have to set the parameters in the special params section
-4. run by using "python src/binding_prediction.py"
+4. Run by using "python src/binding_prediction.py"
 
 Several clustered and unclustered datasets are available in the data folder.
 
