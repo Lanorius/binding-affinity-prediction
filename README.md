@@ -23,7 +23,7 @@ Additionally, PortT5 ist needed:\
 
 Several clustered and unclustered datasets are available in the data folder.
 
-This algorithm currently only works with pKd scores. Leave the general section as it is. When the general setting is set to davis
+This algorithm currently only works with pKd scores. Leave the general section as it is. When the general setting is set to Davis
 the model works on both the pKd scores from the Davis set and those from the BindingDB.
 The compound setting should not be changed as well, unless another way of encoding the compounds is implemented. 
 
