@@ -1,7 +1,7 @@
 # My Master's Thesis: Prediction-Of-Binding-Affinity
 
 Our aim was to predict the binding affinity of compounds and proteins by using a fully connected neural network.\
-To encode both types of molecules we used ChemVAE for the compounds and ProT5 for the proteins. 
+To encode both types of molecules, we used ChemVAE for the compounds and ProT5 for the proteins. 
 
 ![plot](./images/mymodel.png)
 
@@ -9,7 +9,7 @@ The following two repos were also part of my project. All three are required to 
 [Data Creator](https://github.com/Lanorius/dataset_creation): filtering and clustering of DTI dataset\
 [ChemVAE Fork](https://github.com/Lanorius/chemical_vae): encoding of the small molecules
 
-Additionally PortT5 are needed:\
+Additionally, PortT5 ist needed:\
 [Prot T5] (https://github.com/agemagician/ProtTrans): encoding of the proteins
 
 
@@ -24,7 +24,7 @@ Additionally PortT5 are needed:\
 Several clustered and unclustered datasets are available in the data folder.
 
 This algorithm currently only works with pKd scores. Leave the general section as it is. When the general setting is set to davis
-the model works on both the pKd scores from the Davis set as well as those from the BindingDB.
+the model works on both the pKd scores from the Davis set and those from the BindingDB.
 The compound setting should not be changed as well, unless another way of encoding the compounds is implemented. 
 
 
