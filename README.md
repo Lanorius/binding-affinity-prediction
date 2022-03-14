@@ -10,7 +10,7 @@ The following two repos were also part of my project. All three are required to 
 [ChemVAE Fork](https://github.com/Lanorius/chemical_vae): encoding of the small molecules
 
 Additionally, PortT5 ist needed:\
-[Prot T5] (https://github.com/agemagician/ProtTrans): encoding of the proteins
+[ProtT5] (https://github.com/agemagician/ProtTrans): encoding of the proteins
 
 
 #### How to use our Prediction Model
